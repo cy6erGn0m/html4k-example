@@ -106,7 +106,12 @@ fun onReady() {
                     default, static and fixed to top navbar work. It includes the responsive
                     CSS and HTML, so it also adapts to your viewport and device."""}
 
-                p { +"To see the difference between static and fixed top navbars, just scroll."}
+                p {
+                    +"You also can generate HTML at server side "
+                    br()
+                    +"see "
+                    a("servlet") {+"servlet-generated page"}
+                }
 
                 p {
                     a("http://getbootstrap.com/components/#navbar") {
