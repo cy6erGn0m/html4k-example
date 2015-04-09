@@ -13,33 +13,32 @@ class MyServlet : HttpServlet() {
         resp.setContentType("text/html")
         resp.setCharacterEncoding("UTF-8")
 
+        resp.getWriter().appendln("<!DOCTYPE html>")
         resp.getWriter().appendHTML().html {
-            body {
-                head {
-                    title("Server-side example")
-                    link {
-                        rel = LinkRel.stylesheet
-                        href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"
-                    }
-                    link {
-                        rel = LinkRel.stylesheet
-                        href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"
-                    }
+            head {
+                title("Server-side example")
+                link {
+                    rel = LinkRel.stylesheet
+                    href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"
                 }
-                body {
-                    div {
-                        classes = setOf("container-fluid")
+                link {
+                    rel = LinkRel.stylesheet
+                    href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"
+                }
+            }
+            body {
+                div {
+                    classes = setOf("container-fluid")
 
-                        h1 {+"Server side example"}
-                        p { +"This is just example to demonstrate ability to generate HTML at server side" }
-                        p { +"Navigate to "
-                            a("index.html") { +"main page" }
-                            +" or simply press "
-                            kbd {
-                                kbd { +"Alt" }
-                                +" + "
-                                kbd { +"←" }
-                            }
+                    h1 {+"Server side example"}
+                    p { +"This is just example to demonstrate ability to generate HTML at server side" }
+                    p { +"Navigate to "
+                        a("index.html") { +"main page" }
+                        +" or simply press "
+                        kbd {
+                            kbd { +"Alt" }
+                            +" + "
+                            kbd { +"←" }
                         }
                     }
                 }
