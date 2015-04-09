@@ -90,10 +90,19 @@ fun onReady() {
                     }
                 }
             }
+
+            div {
+                id = "quotes-slot"
+            }
         }
 
         Unit // do not remove me
     }
+
+    val presenter = MainPresenter(MainViewModel())
+    presenter.start()
+
+    startTicker(presenter, 1000.0)
 }
 
 fun main(args: Array<String>) {
