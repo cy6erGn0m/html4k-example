@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cg.test</groupId>
+    <artifactId>test-html-builders</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>serverside</module>
+        <module>clientside</module>
+        <module>assembly</module>
+    </modules>
+    <packaging>pom</packaging>
+
+    <properties>
+        <kotlin.version>0.11.91.1</kotlin.version>
+        <html4k.version>0.2.0-SNAPSHOT</html4k.version>
+    </properties>
+
+    <build>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+    </build>
+</project>
