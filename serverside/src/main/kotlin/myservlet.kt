@@ -1,5 +1,6 @@
 package cg.test
 
+import cg.test.bootstrap.containerFluid
 import html4k.stream.appendHTML
 import html4k.*
 import javax.servlet.annotation.WebServlet
@@ -17,23 +18,16 @@ class MyServlet : HttpServlet() {
         resp.getWriter().appendHTML().html {
             head {
                 title("Server-side example")
-                link {
-                    rel = LinkRel.stylesheet
-                    href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"
-                }
-                link {
-                    rel = LinkRel.stylesheet
-                    href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"
-                }
+                styleLink("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css")
+                styleLink("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css")
             }
             body {
-                div {
-                    classes = setOf("container-fluid")
-
+                containerFluid {
                     h1 {+"Server side example"}
                     p { +"This is just example to demonstrate ability to generate HTML at server side" }
                     p { +"Navigate to "
                         a("index.html") { +"main page" }
+                        br
                         +" or simply press "
                         kbd {
                             kbd { +"Alt" }
@@ -46,11 +40,3 @@ class MyServlet : HttpServlet() {
         }.flush()
     }
 }
-
-/*
-<!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
- */
