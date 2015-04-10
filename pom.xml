@@ -11,6 +11,7 @@
         <module>serverside</module>
         <module>clientside</module>
         <module>assembly</module>
+        <module>clientside-viewimpl</module>
     </modules>
     <packaging>pom</packaging>
 
