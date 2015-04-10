@@ -1,8 +1,9 @@
-package cg.test
+package cg.test.view.impl
 
+import cg.test.QuotesListener
 import kotlin.js.dom.html.window
 
-fun randomInterval() = Math.max(50.0, Math.random() * 2000)
+fun randomInterval() = Math.max(50.0, Math.abs(Math.random() - 0.5) * 1000.0)
 
 fun startTicker(listener : QuotesListener, interval : Double = randomInterval()) {
     window.setTimeout({

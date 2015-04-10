@@ -1,34 +1,48 @@
-package cg.test
+package cg.test.view.impl
 
+import cg.test.*
+import html4k.injector.*
 import html4k.TagConsumer
 import html4k.js.div
 import html4k.js.tr
 import org.w3c.dom.Node
-import kotlin.dom.classes
-import kotlin.dom.first
+import kotlin.dom.*
 import kotlin.js.dom.html.*
+import kotlin.properties.Delegates
 
-class QuoteRowViewModel(val element: HTMLTableRowElement) {
-    private val instrumentNameElement = element.cells.item(1) as HTMLElement
-    private val valueSpanElement = element.getElementsByClassName("value-span").item(0) as HTMLElement
-    private val iconElement = element.getElementsByClassName("move-i").item(0) as HTMLElement
+class QuoteRowViewModelImpl : QuoteRowViewModel {
+    var root: HTMLTableRowElement by Delegates.notNull()
 
+    var instrumentNameElement : HTMLElement by Delegates.notNull()
+    var valueSpanElement : HTMLElement by Delegates.notNull()
+    var iconElement : HTMLElement by Delegates.notNull()
+
+    override
     fun setInstrumentName(name: String) {
         instrumentNameElement.textContent = name
     }
 
+    override
     fun setValue(value: Double) {
         valueSpanElement.textContent = value.toString()
     }
 
+    override
     fun setMove(move: QuoteMove) {
-        element.classes = rowClassFor(move)
+        root.classes = rowClassFor(move)
         valueSpanElement.classes = textClassFor(move)
         iconElement.classes = "move-i glyphicon " + iconClassFor(move)
     }
 }
 
-class QuotesTableViewModel(val tableContainerElement: HTMLElement) {
+private fun createRow() = with(QuoteRowViewModelImpl()) { document.createTree0().inject0(this, listOf(
+        InjectRoot to QuoteRowViewModelImpl::root,
+        InjectByClassName("value-span") to QuoteRowViewModelImpl::valueSpanElement,
+        InjectByClassName("name-cell") to QuoteRowViewModelImpl::instrumentNameElement,
+        InjectByClassName("move-i") to QuoteRowViewModelImpl::iconElement
+)).createQuoteRow(); this }
+
+class QuotesTableViewModelImpl(val tableContainerElement: HTMLElement) : QuotesTableViewModel {
     private val tbodyElement = tableContainerElement.getElementsByTagName("tbody").first!!
     private val placeholder = tableContainerElement.createTree0().tr0 {
         classes = setOf("warning")
@@ -39,23 +53,21 @@ class QuotesTableViewModel(val tableContainerElement: HTMLElement) {
         }
     }
 
+    override
     fun start() {
         if (tbodyElement.childNodes.length == 0) {
             tbodyElement.appendChild(placeholder)
         }
     }
 
+    override
     fun appendRowModel(row : QuoteRowViewModel) {
         placeholder.removeFromParent()
-        tbodyElement.appendChild(row.element)
+        tbodyElement.appendChild((row as QuoteRowViewModelImpl).root)
     }
 
-    // we actually don't need it
-//    fun removeRowModel(row : QuoteRowViewModel) {
-//        tbodyElement.removeChild(row.element)
-//    }
-
-    fun createRowModel() = QuoteRowViewModel(document.createTree0().createQuoteRow())
+    override
+    fun createRowModel() : QuoteRowViewModel = createRow()
 }
 
 fun TagConsumer<HTMLElement>.quotesTable(): HTMLElement =
@@ -92,6 +104,7 @@ private fun TagConsumer<HTMLElement>.createQuoteRow(): HTMLTableRowElement =
                 }
             }
             td {
+                classes = setOf("name-cell")
             }
             td {
                 span {

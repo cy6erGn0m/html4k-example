@@ -1,17 +1,22 @@
-package cg.test
+package cg.test.view.impl
 
+import cg.test.*
 import cg.test.bootstrap.*
 import html4k.*
 import html4k.consumers.onFinalize
 import html4k.dom.*
+import html4k.injector.InjectByClassName
+import html4k.injector.InjectRoot
 import html4k.js.*
 import org.w3c.dom.Node
 import java.util.ArrayList
 import kotlin.js.dom.html.*
 
 fun onReady() {
-    document.body.append0 {
-        this.nav {
+    val mainView = MainViewModel()
+
+    document.body.appendWith0({it.inject0(mainView, listOf(InjectByClassName("quotes-slot") to MainViewModel::quotesTableSlot))}) {
+        nav {
             classes = "navbar navbar-default navbar-static-top".split(" ").toSet()
             container {
                 navbarHeader {
@@ -92,14 +97,14 @@ fun onReady() {
             }
 
             div {
-                id = "quotes-slot"
+                classes = setOf("quotes-slot")
             }
         }
 
         Unit // do not remove me
     }
 
-    val presenter = MainPresenter(MainViewModel())
+    val presenter = MainPresenter(mainView)
     presenter.start()
 
     startTicker(presenter, 1000.0)
