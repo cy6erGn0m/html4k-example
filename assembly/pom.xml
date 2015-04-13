@@ -40,7 +40,8 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlinx.html.shared</artifactId>
+            <artifactId>assembly</artifactId>
+            <classifier>webjar</classifier>
             <version>${html4k.version}</version>
         </dependency>
     </dependencies>
@@ -83,13 +84,8 @@
                         </overlay>
                         <overlay>
                             <groupId>org.jetbrains.kotlin</groupId>
-                            <artifactId>kotlinx.html.js</artifactId>
-                            <type>jar</type>
-                            <targetPath>js/</targetPath>
-                        </overlay>
-                        <overlay>
-                            <groupId>org.jetbrains.kotlin</groupId>
-                            <artifactId>kotlinx.html.shared</artifactId>
+                            <artifactId>assembly</artifactId>
+                            <classifier>webjar</classifier>
                             <type>jar</type>
                             <targetPath>js/</targetPath>
                         </overlay>

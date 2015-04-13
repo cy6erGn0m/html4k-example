@@ -5,6 +5,7 @@ import html4k.injector.*
 import html4k.TagConsumer
 import html4k.js.div
 import html4k.js.tr
+import html4k.*
 import org.w3c.dom.Node
 import kotlin.dom.*
 import kotlin.js.dom.html.*

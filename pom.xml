@@ -17,7 +17,7 @@
 
     <properties>
         <kotlin.version>0.11.91.1</kotlin.version>
-        <html4k.version>0.2.0-SNAPSHOT</html4k.version>
+        <html4k.version>0.2.1-SNAPSHOT</html4k.version>
     </properties>
 
     <build>
