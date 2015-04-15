@@ -2,6 +2,7 @@ package market.events
 
 import market.Order
 import market.OrderOnStack
+import market.OrderTrade
 import java.util.concurrent.ConcurrentHashMap
 
 trait ItemEvent<out T> {
@@ -19,6 +20,9 @@ val ItemEvent<Order>.order : Order
     get() = item
 
 val ItemEvent<OrderOnStack>.orderOnStack : OrderOnStack
+    get() = item
+
+val ItemEvent<OrderTrade>.trade : OrderTrade
     get() = item
 
 

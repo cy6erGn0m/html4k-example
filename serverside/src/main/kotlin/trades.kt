@@ -14,6 +14,7 @@ data class SimpleOrder(
 }
 
 
+deprecated("")
 trait TradeListener {
     fun onTrade(trade : OrderTrade)
 }

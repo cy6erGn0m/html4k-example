@@ -12,29 +12,22 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import kotlin.concurrent.withLock
 
-val m = Market(object: TradeListener {
-    override fun onTrade(trade: OrderTrade) {
-        println("trade")
-    }
-})
+val m = Market()
 
 WebServlet(urlPatterns = array("/blotter"), name = "BlotterServlet", loadOnStartup = 1)
-class ListOrdersServlet : HttpServlet(), ItemEventListener<OrderOnStack> {
+class ListOrdersServlet : HttpServlet() {
 
     private val lock = ReentrantLock()
     private val orders = TreeSet<OrderOnStack>()
 
-    override fun onEvent(event: ItemEvent<OrderOnStack>) {
-        lock.withLock {
-            orders.add(event.orderOnStack)
-        }
-    }
-
     override fun init() {
         super<HttpServlet>.init()
 
-        EventListenersRegistry.register(this)
-        EventListenersRegistry.register(m)
+        m.ordersOnStack.forEach {
+            lock.withLock {
+                orders.add(it.orderOnStack)
+            }
+        }
     }
 
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
@@ -57,6 +50,9 @@ class ListOrdersServlet : HttpServlet(), ItemEventListener<OrderOnStack> {
                 name("p")
                 value(it.order.price.toPlainString())
 
+                name("bs")
+                value(it.order.direction.toString())
+
                 endObject()
             }
 
@@ -71,7 +67,7 @@ class ListOrdersServlet : HttpServlet(), ItemEventListener<OrderOnStack> {
         val quantity = req.getParameter("q").toInt()
         val buySell = OrderDirection.valueOf(req.getParameter("bs"))
 
-        EventListenersRegistry.send(ItemPlaced<Order>(SimpleOrder(instrument, price, quantity, buySell)))
+        m.orderObserver.onNext(ItemPlaced<Order>(SimpleOrder(instrument, price, quantity, buySell)))
 
         resp.setContentType("text/plain")
         resp.getWriter().println("OK")

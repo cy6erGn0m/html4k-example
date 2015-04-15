@@ -2,75 +2,100 @@ package market
 
 import market.events.*
 import market.util.grouping.GroupingHandler
-import market.util.grouping.toEventListener
+import rx.Observable
+import rx.Observer
+import rx.schedulers.Schedulers
+import rx.subjects.PublishSubject
 import java.math.BigDecimal
 import java.util.ArrayList
 import java.util.TreeSet
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
+import kotlin.concurrent.name
 
 trait HasInstrument {
-    val instrument : String
+    val instrument: String
 }
 
 trait HasDirection {
-    val direction : OrderDirection
+    val direction: OrderDirection
 }
 
-data class OrderTrade (
-    override val instrument : String,
-    val price : BigDecimal,
-    val quantity : Int
+data class OrderTrade(
+        override val instrument: String,
+        val price: BigDecimal,
+        val quantity: Int
 ) : HasInstrument
 
 enum class OrderDirection {
     BUY SELL
 }
 
-val OrderDirection.opposite : OrderDirection
+val OrderDirection.opposite: OrderDirection
     get() = when (this) {
         OrderDirection.BUY -> OrderDirection.SELL
         OrderDirection.SELL -> OrderDirection.BUY
     }
 
-val OrderDirection.comparisonSign : Int
+val OrderDirection.comparisonSign: Int
     get() = when (this) {
         OrderDirection.BUY -> 1
         OrderDirection.SELL -> -1
     }
 
 trait Order : HasInstrument, HasDirection {
-    val price : BigDecimal
-    val quantity : Int
-    val orderSign : Long
+    val price: BigDecimal
+    val quantity: Int
+    val orderSign: Long
 }
 
-data class OrderOnStack(val order : Order) : Comparable<OrderOnStack>, HasInstrument by order, HasDirection by order {
-
-    var quantity : Int = order.quantity
+data class OrderOnStack(val order: Order, var quantity : Int = order.quantity) : Comparable<OrderOnStack>, HasInstrument by order, HasDirection by order {
 
     override fun compareTo(other: OrderOnStack): Int =
-        order.price.compareTo(other.order.price).let {
-            if (it != 0) it else order.orderSign.compareTo(other.order.orderSign)
-        }
+            order.price.compareTo(other.order.price).let {
+                if (it != 0) it else order.orderSign.compareTo(other.order.orderSign)
+            }
 }
 
 fun Order.onStack() = OrderOnStack(this)
 
-private class Blotter(listener : ItemEventListener<OrderOnStack>, override val instrument : String) : HasInstrument {
-    private val listener = listener
+private class Blotter(override val instrument: String) : HasInstrument, Observer<ItemEvent<Order>> {
     private val tree = TreeSet<OrderOnStack>()
+    private val ordersSubject = PublishSubject.create<ItemEvent<OrderOnStack>>()
+    private val tradesSubject = PublishSubject.create<ItemEvent<OrderTrade>>()
 
-    fun put(order : Order) {
-        val orderState = OrderOnStack(order)
-        tree.add(orderState)
-        listener.onEvent(ItemPlaced(orderState))
+    val orders: Observable<ItemEvent<OrderOnStack>> = ordersSubject
+    val trades : Observable<ItemEvent<OrderTrade>> = tradesSubject
+
+    val oppositeObserver = PublishSubject.create<ItemEvent<OrderOnStack>>()
+
+    init {
+        oppositeObserver
+                .filter { it is ItemPlaced }.
+                forEach {
+                    processOrder(it.orderOnStack)
+                }
     }
 
-    fun remove(order : Order) {
+    override fun onNext(event: ItemEvent<Order>) {
+        when (event) {
+            is ItemPlaced -> put(event.order)
+            is ItemCancelled -> remove(event.order)
+        }
+    }
+
+    override fun onError(e: Throwable?) {
+    }
+
+    override fun onCompleted() {
+    }
+
+    private fun put(order: Order) {
+        val orderState = order.onStack()
+        tree.add(orderState)
+        ordersSubject.onNext(ItemPlaced(orderState))
+    }
+
+    private fun remove(order: Order) {
         if (!tree.remove(order.onStack())) {
             val iterator = tree.iterator()
             while (iterator.hasNext()) {
@@ -81,9 +106,7 @@ private class Blotter(listener : ItemEventListener<OrderOnStack>, override val i
         }
     }
 
-    fun minus(sourceItem : OrderOnStack) : List<OrderTrade> {
-        val completed = ArrayList<OrderOnStack>(Math.min(tree.size(), 16))
-        val trades = ArrayList<OrderTrade>()
+    private fun processOrder(sourceItem: OrderOnStack) {
         val direction = sourceItem.order.direction
         val maxPrice = sourceItem.order.price
 
@@ -97,63 +120,61 @@ private class Blotter(listener : ItemEventListener<OrderOnStack>, override val i
             val toBuy = Math.min(item.quantity, sourceItem.quantity)
             sourceItem.quantity -= toBuy
             item.quantity -= toBuy
-            trades.add(OrderTrade(item.order.instrument, item.order.price, toBuy))
+            tradesSubject.onNext(ItemPlaced(OrderTrade(item.order.instrument, item.order.price, toBuy)))
 
             if (item.quantity == 0) {
                 it.remove()
-                completed.add(item)
+                ordersSubject.onNext(ItemCompleted(item))
             }
         }
 
         if (sourceItem.quantity == 0) {
-            completed.add(sourceItem)
+            ordersSubject.onNext(ItemCompleted(sourceItem))
         }
-
-        completed.forEach {
-            listener.onEvent(ItemCompleted(it))
-        }
-
-        return trades
     }
 }
 
-fun <T : HasInstrument> InstrumentGrouping(workers : Int = Runtime.getRuntime().availableProcessors(), handler : (ItemEvent<T>) -> Unit) = GroupingHandler(workers, {e -> e.item.instrument}, handler)
+public class Market {
+    private val stackSubject = PublishSubject.create<ItemEvent<OrderOnStack>>()
+    private val ordersSubject = PublishSubject.create<ItemEvent<Order>>()
 
-public class Market(tradeListener : TradeListener) : ItemEventListener<Order> {
-    private val blotters = ConcurrentHashMap<Pair<String, OrderDirection>, Blotter>()
-    private val exec = InstrumentGrouping<OrderOnStack> { event ->
-        val oppositeBlotter = getBlotter(event.orderOnStack.instrument, event.orderOnStack.order.direction.opposite)
+    val ordersOnStack: Observable<ItemEvent<OrderOnStack>> = stackSubject
+    val orderObserver : Observer<ItemEvent<Order>> = ordersSubject
+    val trades = PublishSubject.create<ItemEvent<OrderTrade>>()
 
-        when (event) {
-            is ItemPlaced -> oppositeBlotter.minus(event.orderOnStack).forEach { tradeListener.onTrade(it) }
-            is ItemCancelled -> println("order cancelled")
-            is ItemCompleted -> println("order completed")
-            else -> println("Got event $event")
-        }
-    }
+    init {
+        ordersSubject.
+                observeOn(Schedulers.newThread()).
+                groupBy { it.order.instrument }.
+                forEach { group ->
+                    val buyBlotter = Blotter(group.getKey())
+                    val sellBlotter = Blotter(group.getKey())
 
-    override fun onEvent(event: ItemEvent<Order>) {
-        val blotter = getBlotter(event.order.instrument, event.order.direction)
+                    buyBlotter.orders.subscribe(sellBlotter.oppositeObserver)
+                    sellBlotter.orders.subscribe(buyBlotter.oppositeObserver)
 
-        when (event) {
-            is ItemPlaced -> blotter.put(event.order)
-            is ItemCancelled -> blotter.remove(event.order)
-        }
+                    buyBlotter.orders.subscribe(stackSubject)
+                    sellBlotter.orders.subscribe(stackSubject)
+
+                    buyBlotter.trades.subscribe(trades)
+                    sellBlotter.trades.subscribe(trades)
+
+                    group.observeOn(Schedulers.newThread()).
+                            groupBy {it.order.direction}.
+                            forEach { directionGroup ->
+                                val blotter = when (directionGroup.getKey()) {
+                                    OrderDirection.BUY -> buyBlotter
+                                    OrderDirection.SELL -> sellBlotter
+                                    else -> throw IllegalArgumentException("unsupported direction ${directionGroup.getKey()}")
+                                }
+
+                                directionGroup.subscribe(blotter)
+                            }
+                }
     }
 
     fun stop() {
-        exec.stop()
-        exec.join()
-    }
-
-    tailRecursive
-    private fun getBlotter(instrument : String, direction : OrderDirection) : Blotter {
-        val first = blotters.get(instrument to direction)
-        if (first != null) {
-            return first
-        }
-
-        blotters.putIfAbsent(instrument to direction, Blotter(exec.toEventListener(), instrument))
-        return getBlotter(instrument, direction)
+        stackSubject.onCompleted()
+        ordersSubject.onCompleted()
     }
 }
