@@ -7,6 +7,8 @@ import html4k.consumers.onFinalize
 import html4k.dom.*
 import html4k.injector.*
 import html4k.js.*
+import market.web.impl.KWebSocketImpl
+import market.web.impl.WebSocketServiceImpl
 import org.w3c.dom.Node
 import java.util.ArrayList
 import kotlin.js.dom.html.*
@@ -131,7 +133,9 @@ fun onReady() {
         Unit // do not remove me
     }
 
-    val presenter = MainPresenter(mainView)
+    val presenter = MainPresenter(mainView, WebSocketServiceImpl { listener ->
+        KWebSocketImpl("ws://localhost:8080/ws", listener)
+    })
     presenter.start()
 
     startTicker(presenter, 1000.0)

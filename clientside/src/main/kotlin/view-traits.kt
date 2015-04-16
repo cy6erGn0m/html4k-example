@@ -1,6 +1,10 @@
 package cg.test
 
 import market.model.OrderDirection
+import market.model.OrderPlaceCommand
+import market.model.UnknownCommand
+import java.util.*
+import kotlin.properties.Delegates
 
 trait QuoteRowViewModel {
     fun setInstrumentName(name: String)
@@ -32,6 +36,20 @@ trait InstrumentBlotterView {
     fun createRow(referenceRow : InstrumentBlotterViewRow?, init : (InstrumentBlotterViewRow) -> Unit) : InstrumentBlotterViewRow
 
     fun addPlaceholder()
+}
+
+
+trait WebSocketService {
+    val socket: KWebSocket
+    val orderListeners : MutableList<(Order) -> Unit>
+
+    fun start() {
+        socket.send(UnknownCommand)
+    }
+
+    fun sendOrderPlace(order: OrderPlaceCommand) {
+        socket.send(order)
+    }
 }
 
 trait KWebSocket {

@@ -3,7 +3,7 @@ package cg.test
 import market.model.OrderDirection
 import kotlin.properties.Delegates
 
-class MainPresenter(val view : MainView) : QuotesListener {
+class MainPresenter(val view : MainView, val webSocketService : WebSocketService) : QuotesListener {
     private val tableView : QuotesTableViewModel by Delegates.lazy { view.createQuotesTable() }
     private val blotterViews : List<InstrumentBlotterView>
 
@@ -19,6 +19,8 @@ class MainPresenter(val view : MainView) : QuotesListener {
         tableView.start()
 
         blotterPresenters.forEach { it.start() }
+
+        webSocketService.start()
     }
 
     override fun onQuote(instrument: String, value: Double) {

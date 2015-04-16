@@ -6,24 +6,25 @@ import java.util.*
 import kotlin.js.dom.html.window
 import kotlin.reflect.KMemberProperty
 
+native trait MessageEvent {
+    val data : dynamic
+}
+
 native
-trait WebSocket {
+class WebSocket(url : String) {
     fun close(closeCode : Long, reason : String)
     fun close()
     fun send(text : String)
 
     var onopen : (() -> Unit)?
-    var onmessage : ((String) -> Unit)?
+    var onmessage : ((MessageEvent) -> Unit)?
     var onerror : (() -> Unit)?
     var onclose : (() -> Unit)?
 }
 
-native
-fun WebSocket(url : String) : WebSocket
-
 class KWebSocketImpl(val url : String, val listener : (dynamic) -> Unit) : KWebSocket {
     private var currentSocket : WebSocket? = null
-    private val queue = LinkedList<String>()
+    private val queue = ArrayList<String>()
     private var closed = false
 
     init {
@@ -101,7 +102,11 @@ class KWebSocketImpl(val url : String, val listener : (dynamic) -> Unit) : KWebS
         }
 
         socket.onmessage = {
-            onMessage(JSON.parse(it))
+            val data = it.data
+            if (data is String) {
+                onMessage(JSON.parse(data))
+            }
+
             flush()
         }
 

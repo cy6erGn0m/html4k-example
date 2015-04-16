@@ -25,3 +25,8 @@ trait HasInstrument {
 trait HasDirection {
     val direction: OrderDirection
 }
+
+
+trait InputCommand
+data object UnknownCommand : InputCommand
+data class OrderPlaceCommand(val instrument : String, val price : String, val quantity : Int, val direction : String) : InputCommand
