@@ -29,16 +29,16 @@ class InstrumentPresenter(val view : InstrumentView) {
         updateVolume()
     }
 
-    fun putOrderState(order : Order) {
+    fun onOrderUpdate(order : Order) {
         collector.putOrder(order)
-        blotterPresenters[order.direction]!!.putOrderState(order)
+        blotterPresenters[order.direction]!!.onOrderUpdate(order)
 
         updateVolume()
     }
 
-    fun cancelOrder(order : Order) {
+    fun onOrderCancelled(order : Order) {
         collector.removeOrder(order)
-        blotterPresenters[order.direction]!!.cancelOrder(order)
+        blotterPresenters[order.direction]!!.onOrderCancelled(order)
 
         updateVolume()
     }

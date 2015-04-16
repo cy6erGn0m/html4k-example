@@ -11,7 +11,7 @@ class BlotterPresenter(val view : InstrumentBlotterView) {
         view.addPlaceholder()
     }
 
-    fun putOrderState(order : Order) {
+    fun onOrderUpdate(order : Order) {
         if (rows.isEmpty()) {
             view.clear() // to remove placeholder
         }
@@ -28,7 +28,7 @@ class BlotterPresenter(val view : InstrumentBlotterView) {
         }
     }
 
-    fun cancelOrder(order : Order) {
+    fun onOrderCancelled(order : Order) {
         rows.remove(order.orderId)?.remove()
 
         if (rows.isEmpty()) {

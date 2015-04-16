@@ -65,3 +65,38 @@ fun LI.dropdownMenu(block : UL.() -> Unit) : Unit = ul {
 
 fun UL.dropdownHeader(text : String) : Unit = li { classes = setOf("dropdown-header"); +text }
 fun UL.divider() : Unit = li { classes = setOf("divider")}
+
+
+// forms
+
+fun FORM.formGroup(block : DIV.() -> Unit) = div(setOf("form-group"), block)
+private fun FlowContent.buttonImpl(_classes : Set<String>, block : BUTTON.() -> Unit) = button(type = ButtonType.button) {
+    classes = _classes
+
+    block()
+}
+fun FlowContent.buttonPrimary(block : BUTTON.() -> Unit) = buttonImpl(setOf("btn", "btn-primary"), block)
+fun FlowContent.buttonDefault(block : BUTTON.() -> Unit) = buttonImpl(setOf("btn", "btn-default"), block)
+
+fun FlowContent.icon(name : String) = i {
+    classes = setOf("fa", "fa-$name")
+}
+
+fun DIV.spinner(block : INPUT.() -> Unit) = div {
+    classes = setOf("input-group", "spinner")
+
+    textInput {
+        classes = setOf("form-control")
+
+        block()
+    }
+
+    div {
+        classes = setOf("input-group-btn-vertical")
+
+        buttonDefault {
+            icon("caret-up")
+            icon("caret-down")
+        }
+    }
+}

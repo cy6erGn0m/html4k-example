@@ -21,13 +21,15 @@ class InstrumentViewImpl : InstrumentView {
     private var sellVolumeSpan : HTMLElement by Delegates.notNull()
     private var blotterSlotBuy: HTMLElement by Delegates.notNull()
     private var blotterSlotSell: HTMLElement by Delegates.notNull()
+    private var placeOrderButton : HTMLElement by Delegates.notNull()
 
     val injector = document.create.inject(this, listOf(
             InjectByClassName("blotter-instrument-name") to ::nameSpan,
             InjectByClassName("blotter-instrument-volume-buy") to ::buyVolumeSpan,
             InjectByClassName("blotter-instrument-volume-sell") to ::sellVolumeSpan,
             InjectByClassName("blotter-slot-buy") to ::blotterSlotBuy,
-            InjectByClassName("blotter-slot-sell") to ::blotterSlotSell
+            InjectByClassName("blotter-slot-sell") to ::blotterSlotSell,
+            InjectByClassName("btn-primary") to ::placeOrderButton
     ))
 
     val root = injector.div {
@@ -35,6 +37,11 @@ class InstrumentViewImpl : InstrumentView {
 
         div {
             classes = setOf("panel-heading")
+
+            button {
+                classes = setOf("btn btn-primary btn-small")
+                +"Place order"
+            }
 
             h3 {
                 classes = setOf("panel-title")
@@ -61,6 +68,12 @@ class InstrumentViewImpl : InstrumentView {
         div {
             classes = setOf("blotter-slot", "blotter-slot-sell")
             style = "display: inline-block; width: 400px; height: 600px; margin: 10px"
+        }
+    }
+
+    init {
+        placeOrderButton.onclick = {
+            presenter.onPlaceOrderClicked()
         }
     }
 

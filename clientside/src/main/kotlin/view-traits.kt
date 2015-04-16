@@ -4,6 +4,7 @@ import market.model.OrderDirection
 import market.model.OrderPlaceCommand
 import market.model.UnknownCommand
 import market.web.InstrumentPresenter
+import market.web.PlaceOrderDialogPresenter
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -49,6 +50,13 @@ trait InstrumentView {
     fun createBlotterViews() : Map<OrderDirection, InstrumentBlotterView>
 }
 
+trait PlaceOrderDialogView {
+    var presenter : PlaceOrderDialogPresenter
+
+    var instrumentName : String
+    var price : Double
+    var buySell : OrderDirection
+}
 
 trait WebSocketService {
     val socket: KWebSocket
@@ -57,7 +65,6 @@ trait WebSocketService {
     fun start() {
         socket.send(UnknownCommand)
     }
-
     fun sendOrderPlace(order: OrderPlaceCommand) {
         socket.send(order)
     }
