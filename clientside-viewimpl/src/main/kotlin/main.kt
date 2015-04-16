@@ -5,8 +5,7 @@ import cg.test.bootstrap.*
 import html4k.*
 import html4k.consumers.onFinalize
 import html4k.dom.*
-import html4k.injector.InjectByClassName
-import html4k.injector.InjectRoot
+import html4k.injector.*
 import html4k.js.*
 import org.w3c.dom.Node
 import java.util.ArrayList
@@ -15,7 +14,13 @@ import kotlin.js.dom.html.*
 fun onReady() {
     val mainView = MainViewModel()
 
-    document.body.appendWith0({it.inject0(mainView, listOf(InjectByClassName("quotes-slot") to MainViewModel::quotesTableSlot))}) {
+    document.body.appendAndInject(mainView,
+            listOf(
+                    InjectByClassName("quotes-slot") to MainViewModel::quotesTableSlot,
+                    InjectByClassName("blotter-slot-buy") to MainViewModel::blotterSlotBuy,
+                    InjectByClassName("blotter-slot-sell") to MainViewModel::blotterSlotSell
+            )
+    ) {
         nav {
             classes = "navbar navbar-default navbar-static-top".split(" ").toSet()
             container {
@@ -98,6 +103,28 @@ fun onReady() {
 
             div {
                 classes = setOf("quotes-slot")
+            }
+
+            div {
+                classes = setOf("panel", "panel-default")
+
+                div {
+                    classes = setOf("panel-heading")
+
+                    +"Blotter for instrument"
+                    span {
+                        classes = setOf("blotter-instrument-name")
+                    }
+                }
+
+                div {
+                    classes = setOf("blotter-slot", "blotter-slot-buy")
+                    style = "display: inline-block; width: 400px; height: 600px; margin: 10px"
+                }
+                div {
+                    classes = setOf("blotter-slot", "blotter-slot-sell")
+                    style = "display: inline-block; width: 400px; height: 600px; margin: 10px"
+                }
             }
         }
 

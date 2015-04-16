@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>clientside</artifactId>
+    <artifactId>shared</artifactId>
 
     <dependencies>
         <dependency>
@@ -28,11 +28,6 @@
             <artifactId>mockito-all</artifactId>
             <version>1.9.5</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>cg.test</groupId>
-            <artifactId>shared</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

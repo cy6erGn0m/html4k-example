@@ -19,6 +19,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>
@@ -43,6 +49,22 @@
             <groupId>io.reactivex</groupId>
             <artifactId>rxjava</artifactId>
             <version>[1.0.8,1.1.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.jetsocket</groupId>
+            <artifactId>jetsocket-ee</artifactId>
+            <version>[0.0.1-SNAPSHOT, 0.1)</version>
+        </dependency>
+        <dependency>
+            <groupId>cg.test</groupId>
+            <artifactId>shared</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-js-library</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

@@ -6,6 +6,7 @@ import html4k.TagConsumer
 import html4k.js.div
 import html4k.js.tr
 import html4k.*
+import html4k.dom.*
 import org.w3c.dom.Node
 import kotlin.dom.*
 import kotlin.js.dom.html.*
@@ -36,7 +37,7 @@ class QuoteRowViewModelImpl : QuoteRowViewModel {
     }
 }
 
-private fun createRow() = with(QuoteRowViewModelImpl()) { document.createTree0().inject0(this, listOf(
+private fun createRow() = with(QuoteRowViewModelImpl()) { document.create.inject(this, listOf(
         InjectRoot to QuoteRowViewModelImpl::root,
         InjectByClassName("value-span") to QuoteRowViewModelImpl::valueSpanElement,
         InjectByClassName("name-cell") to QuoteRowViewModelImpl::instrumentNameElement,
@@ -45,7 +46,7 @@ private fun createRow() = with(QuoteRowViewModelImpl()) { document.createTree0()
 
 class QuotesTableViewModelImpl(val tableContainerElement: HTMLElement) : QuotesTableViewModel {
     private val tbodyElement = tableContainerElement.getElementsByTagName("tbody").first!!
-    private val placeholder = tableContainerElement.createTree0().tr0 {
+    private val placeholder = document.create.tr {
         classes = setOf("warning")
         td {
             attributes["colspan"] = "3"
@@ -72,7 +73,7 @@ class QuotesTableViewModelImpl(val tableContainerElement: HTMLElement) : QuotesT
 }
 
 fun TagConsumer<HTMLElement>.quotesTable(): HTMLElement =
-        div0 {
+        div {
             classes = setOf("panel", "panel-default")
 
             div {
@@ -98,7 +99,7 @@ fun TagConsumer<HTMLElement>.quotesTable(): HTMLElement =
         }
 
 private fun TagConsumer<HTMLElement>.createQuoteRow(): HTMLTableRowElement =
-        tr0 {
+        tr {
             td {
                 i {
                     classes = setOf("move-i")

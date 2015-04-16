@@ -1,5 +1,6 @@
 package market
 
+import market.model.*
 import market.events.*
 import market.util.grouping.GroupingHandler
 import rx.Observable
@@ -11,52 +12,6 @@ import java.util.ArrayList
 import java.util.TreeSet
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.concurrent.name
-
-trait HasInstrument {
-    val instrument: String
-}
-
-trait HasDirection {
-    val direction: OrderDirection
-}
-
-data class OrderTrade(
-        override val instrument: String,
-        val price: BigDecimal,
-        val quantity: Int
-) : HasInstrument
-
-enum class OrderDirection {
-    BUY SELL
-}
-
-val OrderDirection.opposite: OrderDirection
-    get() = when (this) {
-        OrderDirection.BUY -> OrderDirection.SELL
-        OrderDirection.SELL -> OrderDirection.BUY
-    }
-
-val OrderDirection.comparisonSign: Int
-    get() = when (this) {
-        OrderDirection.BUY -> 1
-        OrderDirection.SELL -> -1
-    }
-
-trait Order : HasInstrument, HasDirection {
-    val price: BigDecimal
-    val quantity: Int
-    val orderSign: Long
-}
-
-data class OrderOnStack(val order: Order, var quantity : Int = order.quantity) : Comparable<OrderOnStack>, HasInstrument by order, HasDirection by order {
-
-    override fun compareTo(other: OrderOnStack): Int =
-            order.price.compareTo(other.order.price).let {
-                if (it != 0) it else order.orderSign.compareTo(other.order.orderSign)
-            }
-}
-
-fun Order.onStack() = OrderOnStack(this)
 
 private class Blotter(override val instrument: String) : HasInstrument, Observer<ItemEvent<Order>> {
     private val tree = TreeSet<OrderOnStack>()

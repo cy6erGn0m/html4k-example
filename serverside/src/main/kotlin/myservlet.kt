@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-WebServlet("myServlet", urlPatterns = array("/servlet"))
+WebServlet(name = "myServlet", urlPatterns = array("/servlet"))
 class MyServlet : HttpServlet() {
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
         resp.setContentType("text/html")

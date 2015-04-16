@@ -1,8 +1,6 @@
 package market.events
 
-import market.Order
-import market.OrderOnStack
-import market.OrderTrade
+import market.model.*
 import java.util.concurrent.ConcurrentHashMap
 
 trait ItemEvent<out T> {

@@ -1,5 +1,6 @@
 package market
 
+import market.model.*
 import java.math.BigDecimal
 import java.util.concurrent.atomic.AtomicLong
 
@@ -11,10 +12,4 @@ data class SimpleOrder(
         override val direction : OrderDirection
 ) : Order {
     override val orderSign: Long = counter.incrementAndGet()
-}
-
-
-deprecated("")
-trait TradeListener {
-    fun onTrade(trade : OrderTrade)
 }
