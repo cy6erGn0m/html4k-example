@@ -1,0 +1,117 @@
+package market.web
+
+import cg.test.*
+import market.model.OrderDirection
+import java.util.*
+import kotlin.properties.Delegates
+
+class InstrumentPresenter(val view : InstrumentView) {
+    init {
+        view.presenter = this
+    }
+
+    private val collector = OrderCollector()
+    private val blotterViews : Map<OrderDirection, InstrumentBlotterView>
+    private val blotterPresenters : Map<OrderDirection, BlotterPresenter>
+
+    init {
+        blotterViews = view.createBlotterViews()
+        blotterPresenters = blotterViews.mapValues { e -> BlotterPresenter(e.value) }
+    }
+
+    var currentInstrument : String = ""
+        set(value) {
+            $currentInstrument = value
+            view.instrumentTitle = value
+        }
+
+    fun start() {
+        updateVolume()
+    }
+
+    fun putOrderState(order : Order) {
+        collector.putOrder(order)
+        blotterPresenters[order.direction]!!.putOrderState(order)
+
+        updateVolume()
+    }
+
+    fun cancelOrder(order : Order) {
+        collector.removeOrder(order)
+        blotterPresenters[order.direction]!!.cancelOrder(order)
+
+        updateVolume()
+    }
+
+    fun onPlaceOrderClicked() {
+        // TODO
+    }
+
+    private fun updateVolume() {
+        view.buyVolume = collector.buyVolume
+        view.sellVolume = collector.sellVolume
+    }
+}
+
+class OrderCollector {
+    private val orders = HashMap<OrderDirection, MutableMap<String, Order>>(2)
+    private var buy : Double = 0.0
+    private var sell : Double = 0.0
+    val buyOrders : List<Order>
+        get() = ordersByDirection(OrderDirection.BUY)
+
+    val sellOrders : List<Order>
+        get() = ordersByDirection(OrderDirection.SELL)
+
+    val buyVolume : Double
+        get() = buy
+
+    val sellVolume : Double
+        get() = sell
+
+    fun ordersByDirection(direction : OrderDirection) : List<Order> = orders[direction]?.values()?.toList() ?: emptyList()
+
+    init {
+        OrderDirection.values().forEach {
+            orders.put(it, HashMap(1024))
+        }
+    }
+
+    fun putOrder(order : Order) {
+        orders[order.direction]!!.put(order.orderId, order)
+        recalc()
+    }
+
+    fun removeOrder(order : Order) {
+        orders.remove(order)
+        recalc()
+    }
+
+    private fun recalc() {
+        buy = orders[OrderDirection.BUY]!!.values().sum()
+        sell = orders[OrderDirection.SELL]!!.values().sum()
+    }
+
+    private fun Collection<Order>.sum() = sumByDouble { it.price.toDouble0() }
+}
+
+fun String.toDouble0() = if (this.matches("-?[0-9]+(\\.[0-9]+)?")) parseDouble(this) else throw IllegalArgumentException()
+private fun parseDouble(s : String) : Double {
+    var result = 0.0
+    val sign = if (s.first() == '-') -1.0 else 1.0
+    val parts = s.split("\\.").map { if (it.startsWith("-")) it.substring(1) else it }
+
+    parts[0].forEach {
+        result = result * 10.0 + (it.toInt() - 0x30)
+    }
+
+    if (parts.size() > 1) {
+        var div = 0.1
+        parts[1].forEach { ch ->
+            result = result + (ch.toInt() - 0x30) * div
+            div *= 0.1
+        }
+    }
+
+    return sign * result
+}

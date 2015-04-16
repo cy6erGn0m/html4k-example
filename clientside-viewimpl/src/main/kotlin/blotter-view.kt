@@ -9,10 +9,7 @@ import html4k.injector.InjectByTagName
 import market.model.OrderDirection
 import kotlin.dom.clear
 import kotlin.dom.text
-import kotlin.js.dom.html.HTMLTableElement
-import kotlin.js.dom.html.HTMLTableRowElement
-import kotlin.js.dom.html.HTMLTableSectionElement
-import kotlin.js.dom.html.document
+import kotlin.js.dom.html.*
 import kotlin.properties.Delegates
 import kotlin.reflect.KMutableMemberProperty
 
@@ -56,9 +53,11 @@ class InstrumentBlotterViewRowImpl(val parent : InstrumentBlotterViewImpl) : Ins
 }
 
 class InstrumentBlotterViewImpl : InstrumentBlotterView {
-
     var tableBody : HTMLTableSectionElement by Delegates.notNull()
-    val tableNode = createTable(::tableBody)
+    private val tableNode = createTable(::tableBody)
+
+    val root : HTMLElement
+        get() = tableNode
 
     override fun clear() {
         tableBody.clear()

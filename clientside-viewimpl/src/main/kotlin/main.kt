@@ -19,8 +19,7 @@ fun onReady() {
     document.body.appendAndInject(mainView,
             listOf(
                     InjectByClassName("quotes-slot") to MainViewModel::quotesTableSlot,
-                    InjectByClassName("blotter-slot-buy") to MainViewModel::blotterSlotBuy,
-                    InjectByClassName("blotter-slot-sell") to MainViewModel::blotterSlotSell
+                    InjectByClassName("instrument-view-slot") to MainViewModel::instrumentViewSlot
             )
     ) {
         nav {
@@ -108,25 +107,7 @@ fun onReady() {
             }
 
             div {
-                classes = setOf("panel", "panel-default")
-
-                div {
-                    classes = setOf("panel-heading")
-
-                    +"Blotter for instrument"
-                    span {
-                        classes = setOf("blotter-instrument-name")
-                    }
-                }
-
-                div {
-                    classes = setOf("blotter-slot", "blotter-slot-buy")
-                    style = "display: inline-block; width: 400px; height: 600px; margin: 10px"
-                }
-                div {
-                    classes = setOf("blotter-slot", "blotter-slot-sell")
-                    style = "display: inline-block; width: 400px; height: 600px; margin: 10px"
-                }
+                classes = setOf("instrument-view-slot")
             }
         }
 

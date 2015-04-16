@@ -3,6 +3,7 @@ package cg.test
 import market.model.OrderDirection
 import market.model.OrderPlaceCommand
 import market.model.UnknownCommand
+import market.web.InstrumentPresenter
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -20,7 +21,7 @@ trait QuotesTableViewModel {
 
 trait MainView {
     fun createQuotesTable(): QuotesTableViewModel
-    fun createBlotterView(direction : OrderDirection) : InstrumentBlotterView
+    fun createInstrumentView() : InstrumentView
 }
 
 trait InstrumentBlotterViewRow {
@@ -36,6 +37,16 @@ trait InstrumentBlotterView {
     fun createRow(referenceRow : InstrumentBlotterViewRow?, init : (InstrumentBlotterViewRow) -> Unit) : InstrumentBlotterViewRow
 
     fun addPlaceholder()
+}
+
+trait InstrumentView {
+    var presenter : InstrumentPresenter
+
+    var instrumentTitle : String
+    var buyVolume : Double
+    var sellVolume : Double
+
+    fun createBlotterViews() : Map<OrderDirection, InstrumentBlotterView>
 }
 
 

@@ -33,6 +33,12 @@
             <groupId>cg.test</groupId>
             <artifactId>shared</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-js-library</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
