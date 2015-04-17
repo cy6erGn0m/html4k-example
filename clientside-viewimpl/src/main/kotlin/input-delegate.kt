@@ -3,6 +3,7 @@ package market.web.impl
 import html4k.minus
 import org.w3c.dom.Node
 import java.util.*
+import kotlin.js.dom.html.HTMLElement
 import kotlin.js.dom.html.HTMLInputElement
 import kotlin.properties.ReadWriteProperty
 
@@ -27,14 +28,27 @@ class InputValidDelegate(val field : HTMLInputElement, val invalidClassName : St
         invalidClassName in field.classesSet
 
     override fun set(thisRef: Any, desc: PropertyMetadata, value: Boolean) {
-        val classes = field.classesSet
-        val changed = if (value) classes.remove(invalidClassName) else classes.add(invalidClassName)
-
-        if (changed) {
-            field.className = classes.join(" ")
-        }
+        field.classIf(invalidClassName, !value)
     }
-
-    private val HTMLInputElement.classesSet : HashSet<String>
-        get() = field.className.split("\\s+").toHashSet()
 }
+
+fun HTMLElement.classIf(className : String, condition : Boolean) {
+    val classes = classesSet.toHashSet()
+
+    val changed = if (condition) classes.add(className) else classes.remove(className)
+
+    if (changed) {
+        this.className = classes.join(" ")
+    }
+}
+
+fun HTMLElement.attributeIf(attributeName : String, attributeValue : String, condition : Boolean) {
+    if (condition) {
+        setAttribute(attributeName, attributeValue)
+    } else {
+        removeAttribute(attributeName)
+    }
+}
+
+val HTMLElement.classesSet : Set<String>
+    get() = this.className.split("\\s+").toSet()

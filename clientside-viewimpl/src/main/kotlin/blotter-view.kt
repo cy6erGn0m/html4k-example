@@ -106,7 +106,6 @@ class InstrumentBlotterViewImpl : InstrumentBlotterView {
                     +"No orders"
                 }
             }
-            Unit
         }
     }
 }

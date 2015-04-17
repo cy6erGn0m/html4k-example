@@ -56,7 +56,8 @@ trait PlaceOrderDialogView {
 
     var instrumentName : String
     var price : String
-    var buySell : OrderDirection
+    var buyActive : Boolean
+    var sellActive : Boolean
     var quantity : String
 
     fun show()

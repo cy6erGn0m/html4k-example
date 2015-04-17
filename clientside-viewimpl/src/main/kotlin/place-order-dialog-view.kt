@@ -5,10 +5,7 @@ import html4k.js.*
 import html4k.dom.*
 import html4k.injector.*
 import cg.test.PlaceOrderDialogView
-import cg.test.bootstrap.buttonDefault
-import cg.test.bootstrap.buttonPrimary
-import cg.test.bootstrap.formGroup
-import cg.test.bootstrap.spinner
+import cg.test.bootstrap.*
 import cg.test.view.impl.removeFromParent
 import jquery.JQuery
 import jquery.jq
@@ -29,6 +26,8 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
     private var quantityText : HTMLInputElement by Delegates.notNull()
     private var quantityUp: HTMLElement by Delegates.notNull()
     private var quantityDown: HTMLElement by Delegates.notNull()
+    private var buyRadioButton : HTMLElement by Delegates.notNull()
+    private var sellRadioButton : HTMLElement by Delegates.notNull()
 
     private val injector = document.create.inject(this, listOf(
             InjectByClassName("instrument-name") to ::nameSpan,
@@ -36,7 +35,9 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
             InjectByClassName("price") to ::priceText,
             InjectByClassName("quantity") to ::quantityText,
             InjectByClassName("spinner-up") to ::quantityUp,
-            InjectByClassName("spinner-down") to ::quantityDown
+            InjectByClassName("spinner-down") to ::quantityDown,
+            InjectByClassName("buyRadioButton") to ::buyRadioButton,
+            InjectByClassName("sellRadioButton") to ::sellRadioButton
     ))
 
     val root = injector.div {
@@ -87,7 +88,16 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
                             label {
                                 +"Buy or sell"
                             }
-                            // TODO
+                            radioGroup("buySell") {
+                                radioButton(RadioButtonType.radioButton) {
+                                    classes += "buyRadioButton"
+                                    +"Buy"
+                                }
+                                radioButton(RadioButtonType.radioButton) {
+                                    classes += "sellRadioButton"
+                                    +"Sell"
+                                }
+                            }
                         }
                         formGroup {
                             label {
@@ -136,6 +146,9 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
         quantityText.onkeydown = { defer { presenter.doValidate() } }
         quantityText.onkeyup = { defer { presenter.doValidate() } }
 
+        buyRadioButton.onclick = { presenter.onBuyButtonClicked() }
+        sellRadioButton.onclick = { presenter.onSellButtonClicked() }
+
         jq(priceText).change { defer { presenter.doValidate() } }
         jq(quantityText).change { defer { presenter.doValidate() } }
     }
@@ -144,10 +157,22 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
 
     override var price: String by InputFieldDelegate(priceText)
 
-    override var buySell: OrderDirection
-        get() = OrderDirection.BUY
-        set(value) {
+    override var buyActive : Boolean
+        get() = throw UnsupportedOperationException()
+        set(active) {
+            setRadioButtonActive(buyRadioButton, active)
         }
+
+    override var sellActive : Boolean
+        get() = throw UnsupportedOperationException()
+        set(active) {
+            setRadioButtonActive(sellRadioButton, active)
+        }
+
+    private fun setRadioButtonActive(button : HTMLElement, active : Boolean) {
+        button.offsetParent?.classIf("active", active)
+        button.attributeIf("checked", "checked", active)
+    }
 
     override var quantity: String by InputFieldDelegate(quantityText)
 

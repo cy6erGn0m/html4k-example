@@ -10,10 +10,19 @@ class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, val socketServi
         view.presenter = this
 
         view.instrumentName = instrument
-        view.buySell = OrderDirection.BUY
+        view.buyActive = true
+        view.sellActive = false
         view.price = price.toString()
         view.quantity = "1"
     }
+
+    private var currentDiction = OrderDirection.BUY
+        set(value) {
+            $currentDiction = value
+
+            view.buyActive = value == OrderDirection.BUY
+            view.sellActive = value == OrderDirection.SELL
+        }
 
     fun onQuantityUpClicked() {
         updateQuantity { it + 1 }
@@ -21,6 +30,14 @@ class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, val socketServi
 
     fun onQuantityDownClicked() {
         updateQuantity { Math.max(1, it - 1) }
+    }
+
+    fun onBuyButtonClicked() {
+        currentDiction = OrderDirection.BUY
+    }
+
+    fun onSellButtonClicked() {
+        currentDiction = OrderDirection.SELL
     }
 
     fun show() {
@@ -70,7 +87,7 @@ class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, val socketServi
 
             val price = view.price
             val quantity = view.quantity.toDouble0().toInt()
-            val direction = view.buySell
+            val direction = currentDiction
 
             socketService.sendOrderPlace(OrderPlaceCommand(view.instrumentName, price, quantity, direction.name()))
         }
