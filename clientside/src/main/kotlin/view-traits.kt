@@ -61,6 +61,12 @@ trait PlaceOrderDialogView {
 
     fun show()
     fun hide()
+
+    var priceValid : Boolean
+    var quantityValid : Boolean
+
+    fun showTooltip(text : String)
+    fun hideTooltip()
 }
 
 trait WebSocketService {

@@ -119,8 +119,6 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
                     }
 
                     buttonPrimary {
-                        attributes["data-dismiss"] = "modal"
-
                         +"Save"
                     }
                 }
@@ -131,6 +129,10 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
     init {
         quantityUp.onclick = { presenter.onQuantityUpClicked() }
         quantityDown.onclick = { presenter.onQuantityDownClicked() }
+        placeButton.onclick = { presenter.onAccepted() }
+
+        jq(priceText).change { defer { presenter.doValidate() } }
+        jq(quantityText).change { defer { presenter.doValidate() } }
     }
 
     override var instrumentName: String
@@ -156,9 +158,20 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
     override fun hide() {
         jq(root).modal("hide")
         window.setTimeout({
-            document.body.removeFromParent()
+            root.removeFromParent()
         }, 300)
+    }
+
+    override var priceValid: Boolean by InputValidDelegate(priceText)
+
+    override var quantityValid: Boolean by InputValidDelegate(quantityText)
+
+    override fun showTooltip(text: String) {
+    }
+
+    override fun hideTooltip() {
     }
 }
 
 private native fun JQuery.modal(showHide : Any)
+private fun defer(block : () -> Unit) = window.setTimeout(block, 0)

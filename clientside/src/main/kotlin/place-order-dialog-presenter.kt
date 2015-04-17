@@ -29,7 +29,43 @@ class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, instrument : St
         view.hide()
     }
 
-    fun doValidate() {
+    fun doValidate() : Boolean {
+        var valid = true
+        var tooltipShown = false
+
+        view.hideTooltip()
+
+        val price = view.price
+        if (!price.matches("^[0-9]+(\\.[0-9]+)?$")) {
+            valid = false
+            view.priceValid = false
+
+            view.showTooltip("Price should be number")
+            tooltipShown = true
+        } else {
+            view.priceValid = true
+        }
+
+        val quantity = view.quantity
+        if (!quantity.matches("^[0-9]+$") || quantity.toDouble0() == 0.0) {
+            valid = false
+            view.quantityValid = false
+
+            if (!tooltipShown) {
+                view.showTooltip("Quantity should be number")
+                tooltipShown = true
+            }
+        } else {
+            view.quantityValid = true
+        }
+
+        return valid
+    }
+
+    fun onAccepted() {
+        if (doValidate()) {
+            hide()
+        }
     }
 
     private fun updateQuantity(block : (Int) -> Int) {
