@@ -13,7 +13,7 @@ import java.math.BigDecimal
 import java.util.Date
 import javax.websocket.server.ServerEndpoint
 
-class RawInputCommand(val type: String, val instrument: String?, val price: String?, val quantity: Int?, val direction: String?)
+class RawInputCommand(val type: String?, val instrument: String?, val price: String?, val quantity: Int?, val direction: String?)
 
 trait Event
 data class Hello(val message: String, val type: String = "hello") : Event

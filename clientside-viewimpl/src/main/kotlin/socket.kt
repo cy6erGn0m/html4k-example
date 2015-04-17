@@ -101,7 +101,7 @@ class KWebSocketImpl(val url : String, val listener : (dynamic) -> Unit) : KWebS
         }
 
         socket.onopen = {
-            if (currentSocket != socket) {
+            if (currentSocket !== socket) {
                 currentSocket?.close()
                 currentSocket = socket
             }
@@ -128,7 +128,13 @@ class KWebSocketImpl(val url : String, val listener : (dynamic) -> Unit) : KWebS
         }
 
         socket.onclose = {
-            closeSocket()
+            if (socket === currentSocket) {
+                currentSocket = null
+            }
+
+            if (!closed) {
+                tryConnect()
+            }
         }
     }
 }
