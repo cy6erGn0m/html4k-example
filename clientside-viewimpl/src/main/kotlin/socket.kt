@@ -74,7 +74,22 @@ class KWebSocketImpl(val url : String, val listener : (dynamic) -> Unit) : KWebS
         listener(message)
     }
 
+    private fun reconnectWithDelay(delay : Int) {
+        window.setTimeout({
+            connect()
+        }, delay)
+    }
+
     private fun connect() {
+        try {
+            tryConnect()
+        } catch (any : Throwable) {
+            console.error("Failed to connect websocket to ${url} due to ", any.getMessage(), " will reconnect in 5s")
+            reconnectWithDelay(3000)
+        }
+    }
+
+    private fun tryConnect() {
         val socket = WebSocket(url)
         fun closeSocket() {
             try {
@@ -98,7 +113,9 @@ class KWebSocketImpl(val url : String, val listener : (dynamic) -> Unit) : KWebS
 
         socket.onerror = {
             closeSocket()
-            connect()
+            console.error("websocket ($url) connection failure, will reconnect in 5s")
+
+            reconnectWithDelay(5000)
         }
 
         socket.onmessage = {
