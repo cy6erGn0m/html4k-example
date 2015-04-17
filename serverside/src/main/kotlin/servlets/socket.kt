@@ -13,11 +13,11 @@ import java.math.BigDecimal
 import java.util.Date
 import javax.websocket.server.ServerEndpoint
 
-class RawInputCommand(val type: String, val inst: String?, val p: String?, val qty: Int?, val bs: String?)
+class RawInputCommand(val type: String, val instrument: String?, val price: String?, val quantity: Int?, val direction: String?)
 
 trait Event
 data class Hello(val message: String, val type: String = "hello") : Event
-data class OrderState(val id: Long, val instrument: String, val price: String, val quantity: Int, val direction: String, val type: String = "order") : Event
+data class OrderState(val id: String, val instrument: String, val price: String, val quantity: Int, val direction: String, val type: String = "order") : Event
 
 ServerEndpoint("/ws")
 class MySocket : WebSocket<RawInputCommand, Event>(javaClass<RawInputCommand>(), { socket ->
@@ -37,7 +37,7 @@ class MySocket : WebSocket<RawInputCommand, Event>(javaClass<RawInputCommand>(),
                         ),
                         m.ordersOnStack.map {
                             OrderState(
-                                    id = it.orderOnStack.order.orderSign,
+                                    id = it.orderOnStack.order.orderSign.toString(),
                                     instrument = it.orderOnStack.instrument,
                                     price = it.orderOnStack.order.price.toString(),
                                     quantity = it.orderOnStack.quantity,
@@ -59,6 +59,6 @@ private fun handleOrderPlaceCommand(command: OrderPlaceCommand): Observable<Even
 
 private fun parseInputCommand(command: RawInputCommand): InputCommand =
         when (command.type) {
-            "placeOrder" -> OrderPlaceCommand(command.inst!!, command.p!!, command.qty!!, command.bs!!)
+            "placeOrder" -> OrderPlaceCommand(command.instrument!!, command.price!!, command.quantity!!, command.direction!!)
             else -> UnknownCommand
         }

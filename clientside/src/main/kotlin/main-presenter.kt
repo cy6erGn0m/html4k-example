@@ -9,7 +9,7 @@ class MainPresenter(val view : MainView, val webSocketService : WebSocketService
     private val instrumentView by Delegates.lazy { view.createInstrumentView() }
 
     val tablePresenter by Delegates.lazy { QuotesTablePresenter(tableView) }
-    val instrumentPresenter by Delegates.lazy { InstrumentPresenter(instrumentView) }
+    val instrumentPresenter by Delegates.lazy { InstrumentPresenter(instrumentView, webSocketService) }
 
     fun start() {
         tableView.start()

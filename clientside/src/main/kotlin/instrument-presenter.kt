@@ -5,7 +5,7 @@ import market.model.OrderDirection
 import java.util.*
 import kotlin.properties.Delegates
 
-class InstrumentPresenter(val view : InstrumentView) {
+class InstrumentPresenter(val view : InstrumentView, val socket : WebSocketService) {
     init {
         view.presenter = this
     }
@@ -27,6 +27,9 @@ class InstrumentPresenter(val view : InstrumentView) {
 
     fun start() {
         updateVolume()
+        socket.orderListeners.add {
+            onOrderUpdate(it)
+        }
     }
 
     fun onOrderUpdate(order : Order) {
@@ -45,7 +48,7 @@ class InstrumentPresenter(val view : InstrumentView) {
 
     fun onPlaceOrderClicked() {
         val dialogView = view.createPlaceOrderDialog()
-        val dialogPresenter = PlaceOrderDialogPresenter(dialogView, currentInstrument, collector.buyOrders.map {it.price.toDouble0()}.min() ?: 1.0)
+        val dialogPresenter = PlaceOrderDialogPresenter(dialogView, socket, currentInstrument, collector.buyOrders.map {it.price.toDouble0()}.min() ?: 1.0)
 
         dialogPresenter.show()
     }

@@ -21,7 +21,7 @@ class WebSocketServiceImpl(val factory: ((dynamic) -> Unit) -> KWebSocket) : Web
 
     private fun onMessage(o: dynamic) {
         if (o.type == "order") {
-            val order = Order(o.id, o.inst, o.p, o.qty, OrderDirection.valueOf(o.bs))
+            val order = Order(o.id, o.instrument, o.price, o.quantity, OrderDirection.valueOf(o.direction))
             orderListeners.forEach { it(order) }
         }
     }

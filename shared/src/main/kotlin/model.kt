@@ -29,4 +29,4 @@ trait HasDirection {
 
 trait InputCommand
 data object UnknownCommand : InputCommand
-data class OrderPlaceCommand(val instrument : String, val price : String, val quantity : Int, val direction : String) : InputCommand
+data class OrderPlaceCommand(val instrument : String, val price : String, val quantity : Int, val direction : String, val type : String = "placeOrder") : InputCommand

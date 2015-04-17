@@ -131,20 +131,21 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
         quantityDown.onclick = { presenter.onQuantityDownClicked() }
         placeButton.onclick = { presenter.onAccepted() }
 
+        priceText.onkeydown = { defer { presenter.doValidate() } }
+        priceText.onkeyup = { defer { presenter.doValidate() } }
+        quantityText.onkeydown = { defer { presenter.doValidate() } }
+        quantityText.onkeyup = { defer { presenter.doValidate() } }
+
         jq(priceText).change { defer { presenter.doValidate() } }
         jq(quantityText).change { defer { presenter.doValidate() } }
     }
 
-    override var instrumentName: String
-        get() = throw UnsupportedOperationException()
-        set(value) {
-            nameSpan.textContent = value
-        }
+    override var instrumentName: String by NodeTextContentDelegate(nameSpan)
 
     override var price: String by InputFieldDelegate(priceText)
 
     override var buySell: OrderDirection
-        get() = throw UnsupportedOperationException()
+        get() = OrderDirection.BUY
         set(value) {
         }
 

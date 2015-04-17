@@ -1,9 +1,11 @@
 package market.web
 
 import cg.test.PlaceOrderDialogView
+import cg.test.WebSocketService
 import market.model.OrderDirection
+import market.model.OrderPlaceCommand
 
-class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, instrument : String, price : Double) {
+class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, val socketService : WebSocketService, instrument : String, price : Double) {
     init {
         view.presenter = this
 
@@ -65,6 +67,12 @@ class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, instrument : St
     fun onAccepted() {
         if (doValidate()) {
             hide()
+
+            val price = view.price
+            val quantity = view.quantity.toDouble0().toInt()
+            val direction = view.buySell
+
+            socketService.sendOrderPlace(OrderPlaceCommand(view.instrumentName, price, quantity, direction.name()))
         }
     }
 
