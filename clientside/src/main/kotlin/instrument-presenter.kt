@@ -44,7 +44,10 @@ class InstrumentPresenter(val view : InstrumentView) {
     }
 
     fun onPlaceOrderClicked() {
-        // TODO
+        val dialogView = view.createPlaceOrderDialog()
+        val dialogPresenter = PlaceOrderDialogPresenter(dialogView, currentInstrument, collector.buyOrders.map {it.price.toDouble0()}.min() ?: 1.0)
+
+        dialogPresenter.show()
     }
 
     private fun updateVolume() {

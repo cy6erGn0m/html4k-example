@@ -79,7 +79,7 @@ fun FlowContent.buttonPrimary(block : BUTTON.() -> Unit) = buttonImpl(setOf("btn
 fun FlowContent.buttonDefault(block : BUTTON.() -> Unit) = buttonImpl(setOf("btn", "btn-default"), block)
 
 fun FlowContent.icon(name : String) = i {
-    classes = setOf("fa", "fa-$name")
+    classes = setOf("glyphicon", "glyphicon-$name")
 }
 
 fun DIV.spinner(block : INPUT.() -> Unit) = div {
@@ -95,8 +95,13 @@ fun DIV.spinner(block : INPUT.() -> Unit) = div {
         classes = setOf("input-group-btn-vertical")
 
         buttonDefault {
-            icon("caret-up")
-            icon("caret-down")
+            classes += "spinner-up"
+            icon("chevron-up")
+        }
+        buttonDefault {
+            classes += "spinner-down"
+
+            icon("chevron-down")
         }
     }
 }

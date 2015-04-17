@@ -9,11 +9,15 @@ import cg.test.bootstrap.buttonDefault
 import cg.test.bootstrap.buttonPrimary
 import cg.test.bootstrap.formGroup
 import cg.test.bootstrap.spinner
+import cg.test.view.impl.removeFromParent
+import jquery.JQuery
+import jquery.jq
 import market.model.OrderDirection
 import market.web.PlaceOrderDialogPresenter
 import kotlin.js.dom.html.HTMLElement
 import kotlin.js.dom.html.HTMLInputElement
 import kotlin.js.dom.html.document
+import kotlin.js.dom.html.window
 import kotlin.properties.Delegates
 
 class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
@@ -31,8 +35,8 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
             InjectByClassName("btn-primary") to ::placeButton,
             InjectByClassName("price") to ::priceText,
             InjectByClassName("quantity") to ::quantityText,
-            InjectByClassName("caret-up") to ::quantityUp,
-            InjectByClassName("caret-down") to ::quantityDown
+            InjectByClassName("spinner-up") to ::quantityUp,
+            InjectByClassName("spinner-down") to ::quantityDown
     ))
 
     val root = injector.div {
@@ -135,12 +139,26 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
             nameSpan.textContent = value
         }
 
-    override var price: Double
-        get() = throw UnsupportedOperationException()
-        set(value) {
-        }
+    override var price: String by InputFieldDelegate(priceText)
+
     override var buySell: OrderDirection
         get() = throw UnsupportedOperationException()
         set(value) {
         }
+
+    override var quantity: String by InputFieldDelegate(quantityText)
+
+    override fun show() {
+        document.body.appendChild(root)
+        jq(root).modal("show")
+    }
+
+    override fun hide() {
+        jq(root).modal("hide")
+        window.setTimeout({
+            document.body.removeFromParent()
+        }, 300)
+    }
 }
+
+private native fun JQuery.modal(showHide : Any)

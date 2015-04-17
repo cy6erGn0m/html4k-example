@@ -3,6 +3,7 @@ package market.web.impl
 import cg.test.InstrumentBlotterView
 import cg.test.InstrumentBlotterViewImpl
 import cg.test.InstrumentView
+import cg.test.PlaceOrderDialogView
 import html4k.*
 import html4k.js.*
 import html4k.dom.*
@@ -39,7 +40,7 @@ class InstrumentViewImpl : InstrumentView {
             classes = setOf("panel-heading")
 
             button {
-                classes = setOf("btn btn-primary btn-small")
+                classes = setOf("btn btn-primary btn-small pull-right")
                 +"Place order"
             }
 
@@ -100,5 +101,5 @@ class InstrumentViewImpl : InstrumentView {
             OrderDirection.SELL to InstrumentBlotterViewImpl().let { blotterSlotSell.appendChild(it.root); it }
     )
 
-
+    override fun createPlaceOrderDialog(): PlaceOrderDialogView = PlaceOrderDialogViewImpl()
 }

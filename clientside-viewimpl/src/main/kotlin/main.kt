@@ -110,8 +110,6 @@ fun onReady() {
                 classes = setOf("instrument-view-slot")
             }
         }
-
-        Unit // do not remove me
     }
 
     val presenter = MainPresenter(mainView, WebSocketServiceImpl { listener ->

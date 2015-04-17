@@ -48,14 +48,19 @@ trait InstrumentView {
     var sellVolume : Double
 
     fun createBlotterViews() : Map<OrderDirection, InstrumentBlotterView>
+    fun createPlaceOrderDialog() : PlaceOrderDialogView
 }
 
 trait PlaceOrderDialogView {
     var presenter : PlaceOrderDialogPresenter
 
     var instrumentName : String
-    var price : Double
+    var price : String
     var buySell : OrderDirection
+    var quantity : String
+
+    fun show()
+    fun hide()
 }
 
 trait WebSocketService {
