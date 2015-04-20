@@ -51,6 +51,11 @@ trait InstrumentView {
     fun createPlaceOrderDialog() : PlaceOrderDialogView
 }
 
+enum class PlaceOrderDialogFieldAnchor {
+    PRICE
+    QUANTITY
+}
+
 trait PlaceOrderDialogView {
     var presenter : PlaceOrderDialogPresenter
 
@@ -66,8 +71,9 @@ trait PlaceOrderDialogView {
     var priceValid : Boolean
     var quantityValid : Boolean
 
-    fun showTooltip(text : String)
-    fun hideTooltip()
+    fun showTooltip(field : PlaceOrderDialogFieldAnchor, text : String)
+    fun hideTooltip(field : PlaceOrderDialogFieldAnchor)
+    fun hideTooltips()
 
     fun setPlaceOrderEnabled(enabled: Boolean)
 }

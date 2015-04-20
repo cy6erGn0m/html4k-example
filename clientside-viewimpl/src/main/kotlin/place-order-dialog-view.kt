@@ -1,5 +1,6 @@
 package market.web.impl
 
+import cg.test.PlaceOrderDialogFieldAnchor
 import html4k.*
 import html4k.js.*
 import html4k.dom.*
@@ -25,6 +26,7 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
 
     private var nameSpan : HTMLElement by Delegates.notNull()
     private var placeButton : HTMLElement by Delegates.notNull()
+    private var cancelButton : HTMLElement by Delegates.notNull()
     private var priceText : HTMLInputElement by Delegates.notNull()
     private var quantityText : HTMLInputElement by Delegates.notNull()
     private var quantityUp: HTMLElement by Delegates.notNull()
@@ -35,6 +37,7 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
     private val injector = document.create.inject(this, listOf(
             InjectByClassName("instrument-name") to ::nameSpan,
             InjectByClassName("btn-primary") to ::placeButton,
+            InjectByClassName("btn-default") to ::cancelButton,
             InjectByClassName("price") to ::priceText,
             InjectByClassName("quantity") to ::quantityText,
             InjectByClassName("spinner-up") to ::quantityUp,
@@ -59,18 +62,6 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
 
                 div {
                     classes = setOf("modal-header")
-
-                    button(type = ButtonType.button) {
-                        classes = setOf("close")
-
-                        attributes["data-dismiss"] = "modal"
-                        attributes["aria-label"] = "Cancel"
-
-                        span {
-                            attributes["aria-hidden"] = "true"
-                            +Entities.times
-                        }
-                    }
 
                     h4 {
                         classes = setOf("modal-title")
@@ -123,8 +114,6 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
                     classes = setOf("modal-footer")
 
                     buttonDefault {
-                        attributes["data-dismiss"] = "modal"
-
                         +"Cancel"
                     }
 
@@ -139,7 +128,9 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
     init {
         quantityUp.onclick = { presenter.onQuantityUpClicked() }
         quantityDown.onclick = { presenter.onQuantityDownClicked() }
+
         placeButton.onclick = { presenter.onAccepted() }
+        cancelButton.onclick = { presenter.onCancelled() }
 
         priceText.onkeydown = { defer { presenter.doValidate() } }
         priceText.onkeyup = { defer { presenter.doValidate() } }
@@ -194,15 +185,31 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
 
     override var quantityValid: Boolean by InputValidDelegate(quantityText)
 
-    override fun showTooltip(text: String) {
+    override fun showTooltip(field : PlaceOrderDialogFieldAnchor, text: String) {
+        val jqField = getTooltipNodes(field)
+
+        jqField.popover(PopoverOptions(content = text))
+        jqField.popover("show")
     }
 
-    override fun hideTooltip() {
+    override fun hideTooltip(field: PlaceOrderDialogFieldAnchor) {
+        getTooltipNodes(field).popover("hide")
+    }
+
+    override fun hideTooltips() {
+        PlaceOrderDialogFieldAnchor.values().forEach {
+            hideTooltip(it)
+        }
     }
 
     override fun setPlaceOrderEnabled(enabled: Boolean) {
         placeButton.attributeIf("disabled", "disabled", !enabled)
     }
+
+    private fun getTooltipNodes(field : PlaceOrderDialogFieldAnchor) = jq(when (field) {
+        PlaceOrderDialogFieldAnchor.PRICE -> priceText
+        PlaceOrderDialogFieldAnchor.QUANTITY -> quantityText
+    })
 }
 
 private native fun JQuery.modal(showHide : Any)
@@ -210,3 +217,6 @@ private fun defer(block : () -> Unit) = window.setTimeout(block, 0)
 private val Node.asElement : HTMLElement
     get() = if (this is HTMLElement) this else throw IllegalArgumentException()
 private native val Node.value : String
+private native fun JQuery.popover(action : String)
+private native fun JQuery.popover(action : PopoverOptions)
+data class PopoverOptions(val content : String, val trigger : String = "manual", val placement : String = "left")

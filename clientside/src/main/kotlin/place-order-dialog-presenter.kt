@@ -1,5 +1,6 @@
 package market.web
 
+import cg.test.PlaceOrderDialogFieldAnchor
 import cg.test.PlaceOrderDialogView
 import cg.test.WebSocketService
 import market.model.OrderDirection
@@ -24,6 +25,8 @@ class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, val socketServi
             view.sellActive = value == OrderDirection.SELL
         }
 
+    private val shownTooltips = hashSetOf<PlaceOrderDialogFieldAnchor>()
+
     fun onQuantityUpClicked() {
         updateQuantity { it + 1 }
     }
@@ -45,24 +48,26 @@ class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, val socketServi
     }
 
     fun hide() {
+        view.hideTooltips()
         view.hide()
     }
 
     fun doValidate() : Boolean {
         var valid = true
-        var tooltipShown = false
-
-        view.hideTooltip()
 
         val price = view.price
         if (!price.matches("^[0-9]+(\\.[0-9]+)?$")) {
             valid = false
             view.priceValid = false
 
-            view.showTooltip("Price should be number")
-            tooltipShown = true
+            if (PlaceOrderDialogFieldAnchor.PRICE !in shownTooltips) {
+                view.showTooltip(PlaceOrderDialogFieldAnchor.PRICE, "Price should be number")
+                shownTooltips.add(PlaceOrderDialogFieldAnchor.PRICE)
+            }
         } else {
             view.priceValid = true
+            shownTooltips.remove(PlaceOrderDialogFieldAnchor.PRICE)
+            view.hideTooltip(PlaceOrderDialogFieldAnchor.PRICE)
         }
 
         val quantity = view.quantity
@@ -70,12 +75,14 @@ class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, val socketServi
             valid = false
             view.quantityValid = false
 
-            if (!tooltipShown) {
-                view.showTooltip("Quantity should be number")
-                tooltipShown = true
+            if (PlaceOrderDialogFieldAnchor.QUANTITY !in shownTooltips) {
+                view.showTooltip(PlaceOrderDialogFieldAnchor.QUANTITY, "Quantity should be number")
+                shownTooltips.add(PlaceOrderDialogFieldAnchor.QUANTITY)
             }
         } else {
             view.quantityValid = true
+            view.hideTooltip(PlaceOrderDialogFieldAnchor.QUANTITY)
+            shownTooltips.remove(PlaceOrderDialogFieldAnchor.QUANTITY)
         }
 
         view.setPlaceOrderEnabled(valid)
@@ -93,6 +100,10 @@ class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, val socketServi
 
             socketService.sendOrderPlace(OrderPlaceCommand(view.instrumentName, price, quantity, direction.name()))
         }
+    }
+
+    fun onCancelled() {
+        hide()
     }
 
     private fun updateQuantity(block : (Int) -> Int) {
