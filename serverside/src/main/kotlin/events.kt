@@ -8,6 +8,7 @@ trait ItemEvent<out T> {
     val item: T
 }
 class ItemPlaced<T>(override val item: T) : ItemEvent<T>
+class ItemChanged<T>(override val item: T) : ItemEvent<T>
 class ItemCancelled<T>(override val item: T) : ItemEvent<T>
 class ItemCompleted<T>(override val item: T) : ItemEvent<T>
 

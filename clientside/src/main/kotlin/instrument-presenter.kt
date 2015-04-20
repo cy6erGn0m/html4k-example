@@ -27,12 +27,26 @@ class InstrumentPresenter(val view : InstrumentView, val socket : WebSocketServi
 
     fun start() {
         updateVolume()
+        blotterPresenters.values().forEach {
+            it.start()
+        }
+
         socket.orderListeners.add {
-            onOrderUpdate(it)
+            when (it.state) {
+                OrderState.ACTIVE -> onOrderUpdate(it)
+                OrderState.CANCELLED -> onOrderCancelled(it)
+                OrderState.COMPLETED -> onOrderCancelled(it) // TODO other behaviour for completion
+                OrderState.UNKNOWN -> onOrderUpdate(it)
+            }
         }
     }
 
     fun onOrderUpdate(order : Order) {
+        if (order.quantity == 0) {
+            onOrderCancelled(order)
+            return
+        }
+
         collector.putOrder(order)
         blotterPresenters[order.direction]!!.onOrderUpdate(order)
 
@@ -98,7 +112,7 @@ class OrderCollector {
         sell = orders[OrderDirection.SELL]!!.values().sum()
     }
 
-    private fun Collection<Order>.sum() = sumByDouble { it.price.toDouble0() }
+    private fun Collection<Order>.sum() = sumByDouble { it.quantity * it.price.toDouble0() }
 }
 
 fun String.toDouble0() = if (this.matches("^-?[0-9]+(\\.[0-9]+)?$")) parseDouble(this) else throw IllegalArgumentException()

@@ -2,6 +2,7 @@ package market.web.impl
 
 import cg.test.KWebSocket
 import cg.test.Order
+import cg.test.OrderState
 import cg.test.WebSocketService
 import market.model.OrderDirection
 import market.model.OrderPlaceCommand
@@ -21,7 +22,7 @@ class WebSocketServiceImpl(val factory: ((dynamic) -> Unit) -> KWebSocket) : Web
 
     private fun onMessage(o: dynamic) {
         if (o.type == "order") {
-            val order = Order(o.id, o.instrument, o.price, o.quantity, OrderDirection.valueOf(o.direction))
+            val order = Order(o.id, o.instrument, o.price, o.quantity, OrderDirection.valueOf(o.direction), OrderState.valueOf(o.state.toUpperCase()))
             orderListeners.forEach { it(order) }
         }
     }

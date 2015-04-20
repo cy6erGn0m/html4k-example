@@ -3,8 +3,7 @@ package market.events.socket
 import kotlinx.jetsocket.Pipe
 import kotlinx.jetsocket.WebSocket
 import market.SimpleOrder
-import market.events.ItemPlaced
-import market.events.orderOnStack
+import market.events.*
 import market.model.*
 import market.model.server.*
 import market.servlets.m
@@ -18,7 +17,7 @@ class RawInputCommand(val type: String?, val instrument: String?, val price: Str
 
 trait Event
 data class Hello(val message: String, val type: String = "hello") : Event
-data class OrderState(val id: String, val instrument: String, val price: String, val quantity: Int, val direction: String, val type: String = "order") : Event
+data class OrderState(val id: String, val instrument: String, val price: String, val quantity: Int, val direction: String, val state : String, val type: String = "order") : Event
 
 ServerEndpoint("/ws")
 class MySocket : WebSocket<RawInputCommand, Event>(javaClass<RawInputCommand>(), { socket ->
@@ -42,7 +41,14 @@ class MySocket : WebSocket<RawInputCommand, Event>(javaClass<RawInputCommand>(),
                                     instrument = it.orderOnStack.instrument,
                                     price = it.orderOnStack.order.price.toString(),
                                     quantity = it.orderOnStack.quantity,
-                                    direction = it.orderOnStack.direction.name()
+                                    direction = it.orderOnStack.direction.name(),
+                                    state = when (it) {
+                                        is ItemPlaced -> "active"
+                                        is ItemChanged -> "active"
+                                        is ItemCompleted -> "completed"
+                                        is ItemCancelled -> "cancelled"
+                                        else -> "unknown"
+                                    }
                             )
                         }
                 )

@@ -120,6 +120,7 @@ class KWebSocketImpl(val url : String, val listener : (dynamic) -> Unit) : KWebS
 
         socket.onmessage = {
             val data = it.data
+            console.log("Received from websocket", data)
             if (data is String) {
                 onMessage(JSON.parse(data))
             }

@@ -66,26 +66,35 @@ private class Blotter(override val instrument: String) : HasInstrument, Observer
         val direction = sourceItem.order.direction
         val maxPrice = sourceItem.order.price
 
-        val it = if (direction == OrderDirection.SELL) tree.iterator() else tree.descendingIterator()
+        var changed = false
+        val it = if (direction == OrderDirection.BUY) tree.iterator() else tree.descendingIterator()
         while (sourceItem.quantity > 0 && it.hasNext()) {
             val item = it.next()
+            assert(item !== sourceItem) { "We found sourceItem on contrary side blotter" }
+
             if (item.order.price.compareTo(maxPrice) == direction.comparisonSign) {
                 break
             }
 
             val toBuy = Math.min(item.quantity, sourceItem.quantity)
+            assert(toBuy > 0) { "there is item with qty = 0 stuck here" }
             sourceItem.quantity -= toBuy
             item.quantity -= toBuy
+            changed = true
             tradesSubject.onNext(ItemPlaced(OrderTrade(item.order.instrument, item.order.price, toBuy)))
 
             if (item.quantity == 0) {
                 it.remove()
                 ordersSubject.onNext(ItemCompleted(item))
+            } else {
+                ordersSubject.onNext(ItemChanged(item))
             }
         }
 
         if (sourceItem.quantity == 0) {
             ordersSubject.onNext(ItemCompleted(sourceItem))
+        } else if (changed) {
+            ordersSubject.onNext(ItemChanged(sourceItem))
         }
     }
 }

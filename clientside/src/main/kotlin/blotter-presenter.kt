@@ -29,10 +29,13 @@ class BlotterPresenter(val view : InstrumentBlotterView) {
     }
 
     fun onOrderCancelled(order : Order) {
-        rows.remove(order.orderId)?.remove()
+        val rowView = rows.remove(order.orderId)
+        if (rowView != null) {
+            rowView.remove()
 
-        if (rows.isEmpty()) {
-            view.addPlaceholder()
+            if (rows.isEmpty()) {
+                view.addPlaceholder()
+            }
         }
     }
 
