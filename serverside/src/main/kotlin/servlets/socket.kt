@@ -6,6 +6,7 @@ import market.SimpleOrder
 import market.events.ItemPlaced
 import market.events.orderOnStack
 import market.model.*
+import market.model.server.*
 import market.servlets.m
 import rx.Observable
 import rx.schedulers.Schedulers

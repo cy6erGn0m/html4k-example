@@ -3,6 +3,7 @@ package market.servlets
 import com.google.gson.stream.JsonWriter
 import market.*
 import market.model.*
+import market.model.server.*
 import market.events.*
 import java.math.BigDecimal
 import java.util.*

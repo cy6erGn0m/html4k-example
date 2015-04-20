@@ -1,6 +1,7 @@
 package market.events
 
 import market.model.*
+import market.model.server.*
 import java.util.concurrent.ConcurrentHashMap
 
 trait ItemEvent<out T> {

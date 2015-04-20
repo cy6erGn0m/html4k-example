@@ -1,6 +1,7 @@
 package market
 
 import market.model.*
+import market.model.server.Order
 import java.math.BigDecimal
 import java.util.concurrent.atomic.AtomicLong
 

@@ -1,6 +1,7 @@
 package market
 
 import market.model.*
+import market.model.server.*
 import market.events.*
 import market.util.grouping.GroupingHandler
 import rx.Observable

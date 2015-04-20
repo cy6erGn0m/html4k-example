@@ -1,5 +1,6 @@
-package market.model
+package market.model.server
 
+import market.model.*
 import java.math.BigDecimal
 
 data class OrderTrade(
