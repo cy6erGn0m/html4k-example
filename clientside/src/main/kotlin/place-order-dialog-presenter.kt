@@ -16,7 +16,7 @@ class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, val socketServi
         view.quantity = "1"
     }
 
-    private var currentDiction = OrderDirection.BUY
+    private var currentDiction : OrderDirection = OrderDirection.BUY
         set(value) {
             $currentDiction = value
 

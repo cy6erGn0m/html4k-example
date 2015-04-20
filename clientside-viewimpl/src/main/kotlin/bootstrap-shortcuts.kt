@@ -82,19 +82,20 @@ fun FlowContent.buttonDefault(block : BUTTON.() -> Unit) = buttonImpl(setOf("btn
 
 class RadioDIV(val name : String, consumer : TagConsumer<*>) : DIV(mapOf("class" to "btn-group", "data-toggle" to "buttons"), consumer)
 
-fun FlowContent.radioGroup(name : String, block : RadioDIV.() -> Unit) = RadioDIV(name, consumer).block()
+fun FlowContent.radioGroup(name : String, block : RadioDIV.() -> Unit) = RadioDIV(name, consumer).visit(block)
 
 enum class RadioButtonType {
     checkbox
     radioButton
 }
-fun RadioDIV.radioButton(type : RadioButtonType = RadioButtonType.checkbox, block : INPUT.() -> Unit) = label {
+fun RadioDIV.radioButton(type : RadioButtonType = RadioButtonType.checkbox, block : LABEL.() -> Unit) = label {
     classes = setOf("btn btn-primary")
     input(type = if (type == RadioButtonType.checkbox) InputType.checkBox else InputType.radio, name = this@radioButton.name) {
+        classes = emptySet()
         autoComplete = false
-
-        block()
     }
+
+    block()
 }
 
 fun FlowContent.icon(name : String) = i {

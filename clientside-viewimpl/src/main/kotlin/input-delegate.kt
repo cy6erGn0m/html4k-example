@@ -33,7 +33,7 @@ class InputValidDelegate(val field : HTMLInputElement, val invalidClassName : St
 }
 
 fun HTMLElement.classIf(className : String, condition : Boolean) {
-    val classes = classesSet.toHashSet()
+    val classes = LinkedHashSet(classesSet.toHashSet())
 
     val changed = if (condition) classes.add(className) else classes.remove(className)
 
@@ -51,4 +51,4 @@ fun HTMLElement.attributeIf(attributeName : String, attributeValue : String, con
 }
 
 val HTMLElement.classesSet : Set<String>
-    get() = this.className.split("\\s+").toSet()
+    get() = LinkedHashSet(this.className.split("\\s+").filterNot {it.isEmpty()})

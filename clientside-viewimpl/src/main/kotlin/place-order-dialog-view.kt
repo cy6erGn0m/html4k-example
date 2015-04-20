@@ -11,6 +11,9 @@ import jquery.JQuery
 import jquery.jq
 import market.model.OrderDirection
 import market.web.PlaceOrderDialogPresenter
+import org.w3c.dom.Node
+import org.w3c.dom.NodeList
+import kotlin.dom.toList
 import kotlin.js.dom.html.HTMLElement
 import kotlin.js.dom.html.HTMLInputElement
 import kotlin.js.dom.html.document
@@ -170,8 +173,10 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
         }
 
     private fun setRadioButtonActive(button : HTMLElement, active : Boolean) {
-        button.offsetParent?.classIf("active", active)
-        button.attributeIf("checked", "checked", active)
+        button.classIf("active", active)
+        button.getElementsByTagName("input").toList().filter {it.attributes.getNamedItem("type").value == "radio"}.forEach {
+            it.asElement.attributeIf("checked", "checked", active)
+        }
     }
 
     override var quantity: String by InputFieldDelegate(quantityText)
@@ -201,3 +206,6 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
 
 private native fun JQuery.modal(showHide : Any)
 private fun defer(block : () -> Unit) = window.setTimeout(block, 0)
+private val Node.asElement : HTMLElement
+    get() = if (this is HTMLElement) this else throw IllegalArgumentException()
+private native val Node.value : String
