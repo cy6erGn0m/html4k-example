@@ -1,6 +1,6 @@
 package market.web.impl
 
-import cg.test.KWebSocket
+import market.web.*
 import market.web.impl
 import java.util.*
 import kotlin.js.dom.html.window

@@ -1,10 +1,14 @@
-package cg.test.tests
+package market.web.tests
 
-import cg.test.*
+import market.web.QuoteMove
+import market.web.QuoteRowViewModel
+import market.web.QuotesTablePresenter
+import market.web.QuotesTableViewModel
 import org.mockito.Matchers
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import java.util.ArrayList
 import org.junit.Test as test
 

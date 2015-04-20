@@ -1,7 +1,7 @@
-package cg.test.view.impl
+package market.web.impl
 
-import cg.test.*
-import cg.test.bootstrap.*
+import market.web.*
+import market.web.impl.bootstrap.*
 import html4k.*
 import html4k.consumers.onFinalize
 import html4k.dom.*

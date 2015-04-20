@@ -1,6 +1,6 @@
-package cg.test.view.impl
+package market.web.impl
 
-import cg.test.QuotesListener
+import market.web.*
 import kotlin.js.dom.html.window
 
 fun randomInterval() = Math.max(50.0, Math.abs(Math.random() - 0.5) * 1000.0)

@@ -1,12 +1,8 @@
-package cg.test
+package market.web
 
 import market.model.OrderDirection
 import market.model.OrderPlaceCommand
 import market.model.UnknownCommand
-import market.web.InstrumentPresenter
-import market.web.PlaceOrderDialogPresenter
-import java.util.*
-import kotlin.properties.Delegates
 
 trait QuoteRowViewModel {
     fun setInstrumentName(name: String)

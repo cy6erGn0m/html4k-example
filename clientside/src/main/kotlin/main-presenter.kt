@@ -1,7 +1,5 @@
-package cg.test
+package market.web
 
-import market.model.OrderDirection
-import market.web.InstrumentPresenter
 import kotlin.properties.Delegates
 
 class MainPresenter(val view : MainView, val webSocketService : WebSocketService) : QuotesListener {

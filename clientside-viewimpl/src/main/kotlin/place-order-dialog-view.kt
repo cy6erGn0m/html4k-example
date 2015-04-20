@@ -1,13 +1,11 @@
 package market.web.impl
 
-import cg.test.PlaceOrderDialogFieldAnchor
 import html4k.*
 import html4k.js.*
 import html4k.dom.*
 import html4k.injector.*
-import cg.test.PlaceOrderDialogView
-import cg.test.bootstrap.*
-import cg.test.view.impl.removeFromParent
+import market.web.*
+import market.web.impl.bootstrap.*
 import jquery.JQuery
 import jquery.jq
 import market.model.OrderDirection

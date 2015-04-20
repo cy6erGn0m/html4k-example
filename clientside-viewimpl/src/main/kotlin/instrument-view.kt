@@ -1,9 +1,6 @@
 package market.web.impl
 
-import cg.test.InstrumentBlotterView
-import cg.test.InstrumentBlotterViewImpl
-import cg.test.InstrumentView
-import cg.test.PlaceOrderDialogView
+import market.web.*
 import html4k.*
 import html4k.js.*
 import html4k.dom.*

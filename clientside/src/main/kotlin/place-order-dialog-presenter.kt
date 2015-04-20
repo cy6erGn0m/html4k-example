@@ -1,8 +1,6 @@
 package market.web
 
-import cg.test.PlaceOrderDialogFieldAnchor
-import cg.test.PlaceOrderDialogView
-import cg.test.WebSocketService
+
 import market.model.OrderDirection
 import market.model.OrderPlaceCommand
 

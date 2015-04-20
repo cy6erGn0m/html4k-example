@@ -1,6 +1,6 @@
-package cg.test
+package market.web
 
-import market.model.*
+import market.model.OrderDirection
 
 trait QuotesListener {
     fun onQuote(instrument : String, value : Double)
