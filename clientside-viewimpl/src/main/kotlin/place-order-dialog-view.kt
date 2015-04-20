@@ -88,9 +88,6 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
 
                     form {
                         formGroup {
-                            label {
-                                +"Buy or sell"
-                            }
                             radioGroup("buySell") {
                                 radioButton(RadioButtonType.radioButton) {
                                     classes += "buyRadioButton"
