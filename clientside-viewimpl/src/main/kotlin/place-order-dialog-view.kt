@@ -199,6 +199,10 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
 
     override fun hideTooltip() {
     }
+
+    override fun setPlaceOrderEnabled(enabled: Boolean) {
+        placeButton.attributeIf("disabled", "disabled", !enabled)
+    }
 }
 
 private native fun JQuery.modal(showHide : Any)

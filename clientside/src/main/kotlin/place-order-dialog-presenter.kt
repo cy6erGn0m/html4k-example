@@ -78,6 +78,8 @@ class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, val socketServi
             view.quantityValid = true
         }
 
+        view.setPlaceOrderEnabled(valid)
+
         return valid
     }
 

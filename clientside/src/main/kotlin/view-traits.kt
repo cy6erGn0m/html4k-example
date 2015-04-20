@@ -68,6 +68,8 @@ trait PlaceOrderDialogView {
 
     fun showTooltip(text : String)
     fun hideTooltip()
+
+    fun setPlaceOrderEnabled(enabled: Boolean)
 }
 
 trait WebSocketService {
