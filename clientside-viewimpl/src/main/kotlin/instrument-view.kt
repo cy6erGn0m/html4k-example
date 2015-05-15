@@ -7,8 +7,8 @@ import html4k.dom.*
 import html4k.injector.*
 import market.model.OrderDirection
 import market.web.InstrumentPresenter
-import kotlin.js.dom.html.HTMLElement
-import kotlin.js.dom.html.document
+import org.w3c.dom.HTMLElement
+import kotlin.browser.document
 import kotlin.properties.Delegates
 
 class InstrumentViewImpl : InstrumentView {
@@ -19,15 +19,13 @@ class InstrumentViewImpl : InstrumentView {
     private var sellVolumeSpan : HTMLElement by Delegates.notNull()
     private var blotterSlotBuy: HTMLElement by Delegates.notNull()
     private var blotterSlotSell: HTMLElement by Delegates.notNull()
-    private var placeOrderButton : HTMLElement by Delegates.notNull()
 
     val injector = document.create.inject(this, listOf(
             InjectByClassName("blotter-instrument-name") to ::nameSpan,
             InjectByClassName("blotter-instrument-volume-buy") to ::buyVolumeSpan,
             InjectByClassName("blotter-instrument-volume-sell") to ::sellVolumeSpan,
             InjectByClassName("blotter-slot-buy") to ::blotterSlotBuy,
-            InjectByClassName("blotter-slot-sell") to ::blotterSlotSell,
-            InjectByClassName("btn-primary") to ::placeOrderButton
+            InjectByClassName("blotter-slot-sell") to ::blotterSlotSell
     ))
 
     val root = injector.div {
@@ -38,6 +36,9 @@ class InstrumentViewImpl : InstrumentView {
 
             button {
                 classes = setOf("btn btn-primary btn-small pull-right")
+                onClickFunction = {
+                    presenter.onPlaceOrderClicked()
+                }
                 +"Place order"
             }
 
@@ -66,12 +67,6 @@ class InstrumentViewImpl : InstrumentView {
         div {
             classes = setOf("blotter-slot", "blotter-slot-sell")
             style = "display: inline-block; width: 400px; height: 600px; margin: 10px"
-        }
-    }
-
-    init {
-        placeOrderButton.onclick = {
-            presenter.onPlaceOrderClicked()
         }
     }
 

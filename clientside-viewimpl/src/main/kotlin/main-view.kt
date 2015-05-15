@@ -5,9 +5,9 @@ import html4k.*
 import html4k.dom.*
 import market.model.OrderDirection
 import market.web.impl.InstrumentViewImpl
-import kotlin.js.dom.html.HTMLElement
-import kotlin.js.dom.html.HTMLTableElement
-import kotlin.js.dom.html.document
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLTableElement
+import kotlin.browser.document
 import kotlin.properties.Delegates
 
 class MainViewModel : MainView {

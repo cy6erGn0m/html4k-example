@@ -11,12 +11,14 @@ import market.web.impl.KWebSocketImpl
 import market.web.impl.WebSocketServiceImpl
 import org.w3c.dom.Node
 import java.util.ArrayList
-import kotlin.js.dom.html.*
+import org.w3c.dom.*
+import kotlin.browser.document
+import kotlin.browser.window
 
 fun onReady() {
     val mainView = MainViewModel()
 
-    document.body.appendAndInject(mainView,
+    document.body!!.appendAndInject(mainView,
             listOf(
                     InjectByClassName("quotes-slot") to MainViewModel::quotesTableSlot,
                     InjectByClassName("instrument-view-slot") to MainViewModel::instrumentViewSlot
@@ -117,9 +119,9 @@ fun onReady() {
     })
     presenter.start()
 
-    startTicker(presenter, 1000.0)
+    startTicker(presenter, 1000)
 }
 
 fun main(args: Array<String>) {
-    window.onload = ::onReady
+    window.onload = { onReady() }
 }

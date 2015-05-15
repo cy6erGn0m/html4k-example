@@ -10,13 +10,11 @@ import jquery.JQuery
 import jquery.jq
 import market.model.OrderDirection
 import market.web.PlaceOrderDialogPresenter
-import org.w3c.dom.Node
-import org.w3c.dom.NodeList
+import org.w3c.dom.*
 import kotlin.dom.toList
-import kotlin.js.dom.html.HTMLElement
-import kotlin.js.dom.html.HTMLInputElement
-import kotlin.js.dom.html.document
-import kotlin.js.dom.html.window
+import kotlin.browser.document
+import kotlin.browser.window
+import kotlin.dom.removeFromParent
 import kotlin.properties.Delegates
 
 class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
@@ -160,7 +158,7 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
 
     private fun setRadioButtonActive(button : HTMLElement, active : Boolean) {
         button.classIf("active", active)
-        button.getElementsByTagName("input").toList().filter {it.attributes.getNamedItem("type").value == "radio"}.forEach {
+        button.getElementsByTagName("input").asList().filter { (it as HTMLInputElement).type == "radio" }.forEach {
             it.asElement.attributeIf("checked", "checked", active)
         }
     }
@@ -168,7 +166,7 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
     override var quantity: String by InputFieldDelegate(quantityText)
 
     override fun show() {
-        document.body.appendChild(root)
+        document.body!!.appendChild(root)
         jq(root).modal("show")
     }
 

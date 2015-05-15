@@ -32,23 +32,19 @@ class QuotesTableTest {
         verify(view, times(1)).createRowModel()
         verify(view, times(1)).appendRowModel(any())
         verify(createdRows.single(), times(1)).setInstrumentName("A")
-        verify(createdRows.single(), times(1)).setValue(1.0)
-        verify(createdRows.single(), times(1)).setMove(QuoteMove.NEUTRAL)
+        verify(createdRows.single(), times(1)).setValueAndMove(1.0, QuoteMove.NEUTRAL)
 
         presenter.onQuote("A", 1.5)
         verify(createdRows.single(), times(1)).setInstrumentName("A")
-        verify(createdRows.single(), times(1)).setValue(1.5)
-        verify(createdRows.single(), times(1)).setMove(QuoteMove.UP)
+        verify(createdRows.single(), times(1)).setValueAndMove(1.5, QuoteMove.UP)
 
         presenter.onQuote("A", 0.5)
         verify(createdRows.single(), times(1)).setInstrumentName("A")
-        verify(createdRows.single(), times(1)).setValue(0.5)
-        verify(createdRows.single(), times(1)).setMove(QuoteMove.DOWN)
+        verify(createdRows.single(), times(1)).setValueAndMove(0.5, QuoteMove.DOWN)
 
         // verify totals
         verify(createdRows.single(), times(1)).setInstrumentName(any())
-        verify(createdRows.single(), times(3)).setValue(Matchers.anyDouble())
-        verify(createdRows.single(), times(3)).setMove(any())
+        verify(createdRows.single(), times(3)).setValueAndMove(Matchers.anyDouble(), any())
     }
 
     suppress("NOTHING_TO_INLINE")

@@ -6,8 +6,7 @@ import market.model.UnknownCommand
 
 trait QuoteRowViewModel {
     fun setInstrumentName(name: String)
-    fun setValue(value: Double)
-    fun setMove(move: QuoteMove)
+    fun setValueAndMove(value: Double, move: QuoteMove)
 }
 
 trait QuotesTableViewModel {

@@ -24,8 +24,7 @@ class QuotesTablePresenter(val view: QuotesTableViewModel) : QuotesListener {
         }
 
         val row = instrumentRows[instrument]!!
-        row.setValue(value)
-        row.setMove(move)
+        row.setValueAndMove(value, move)
     }
 
 }

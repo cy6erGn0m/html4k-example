@@ -2,25 +2,11 @@ package market.web.impl
 
 import market.web.*
 import market.web.impl
+import org.w3c.dom.MessageEvent
+import org.w3c.dom.WebSocket
 import java.util.*
-import kotlin.js.dom.html.window
+import kotlin.browser.window
 import kotlin.reflect.KMemberProperty
-
-native trait MessageEvent {
-    val data : dynamic
-}
-
-native
-class WebSocket(url : String) {
-    fun close(closeCode : Long, reason : String)
-    fun close()
-    fun send(text : String)
-
-    var onopen : (() -> Unit)?
-    var onmessage : ((MessageEvent) -> Unit)?
-    var onerror : (() -> Unit)?
-    var onclose : (() -> Unit)?
-}
 
 class KWebSocketImpl(val url : String, val listener : (dynamic) -> Unit) : KWebSocket {
     private var currentSocket : WebSocket? = null
@@ -52,10 +38,7 @@ class KWebSocketImpl(val url : String, val listener : (dynamic) -> Unit) : KWebS
     }
 
     private fun flush() {
-        val s = currentSocket
-        if (s == null) {
-            return
-        }
+        val s = currentSocket ?: return
 
         try {
             val iterator = queue.iterator()
@@ -119,13 +102,15 @@ class KWebSocketImpl(val url : String, val listener : (dynamic) -> Unit) : KWebS
         }
 
         socket.onmessage = {
-            val data = it.data
-            console.log("Received from websocket", data)
-            if (data is String) {
-                onMessage(JSON.parse(data))
-            }
+            if (it is MessageEvent) {
+                val data = it.data
+                console.log("Received from websocket", data)
+                if (data is String) {
+                    onMessage(JSON.parse(data))
+                }
 
-            flush()
+                flush()
+            }
         }
 
         socket.onclose = {

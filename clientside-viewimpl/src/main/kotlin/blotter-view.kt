@@ -9,7 +9,9 @@ import html4k.injector.InjectByTagName
 import market.model.OrderDirection
 import kotlin.dom.clear
 import kotlin.dom.text
-import kotlin.js.dom.html.*
+import org.w3c.dom.*
+import kotlin.browser.document
+import kotlin.dom.removeFromParent
 import kotlin.properties.Delegates
 import kotlin.reflect.KMutableMemberProperty
 
@@ -24,13 +26,13 @@ class InstrumentBlotterViewRowImpl(val parent : InstrumentBlotterViewImpl) : Ins
     val quantityCell = row.cells.item(1)!!
 
     override var price: String
-        get() = priceCell.textContent
+        get() = priceCell.textContent!!
         set(value) {
             priceCell.textContent = value
         }
 
     override var quantity: Int
-        get() = quantityCell.textContent.let { t -> if (t.matches("[0-9]+")) parseInt(t) else 0 }
+        get() = quantityCell.textContent!!.let { t -> if (t.matches("[0-9]+")) parseInt(t) else 0 }
         set(value) {
             quantityCell.textContent = value.toString()
         }

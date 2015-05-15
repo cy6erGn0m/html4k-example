@@ -9,7 +9,8 @@ import html4k.*
 import html4k.dom.*
 import org.w3c.dom.Node
 import kotlin.dom.*
-import kotlin.js.dom.html.*
+import org.w3c.dom.*
+import kotlin.browser.document
 import kotlin.properties.Delegates
 
 class QuoteRowViewModelImpl : QuoteRowViewModel {
@@ -24,16 +25,15 @@ class QuoteRowViewModelImpl : QuoteRowViewModel {
         instrumentNameElement.textContent = name
     }
 
-    override
-    fun setValue(value: Double) {
-        valueSpanElement.textContent = value.toString()
-    }
-
-    override
-    fun setMove(move: QuoteMove) {
+    override fun setValueAndMove(value: Double, move: QuoteMove) {
         root.classes = rowClassFor(move)
-        valueSpanElement.classes = textClassFor(move)
-        iconElement.classes = "move-i glyphicon " + iconClassFor(move)
+        root.getElementsByClassName("move-i").asList().forEach {
+            it.classes = "move-i glyphicon " + iconClassFor(move)
+        }
+        root.getElementsByClassName("value-span").asList().forEach {
+            it.textContent = value.toString()
+            it.parentElement?.classes = textClassFor(move)
+        }
     }
 }
 
@@ -45,7 +45,7 @@ private fun createRow() = with(QuoteRowViewModelImpl()) { document.create.inject
 )).createQuoteRow(); this }
 
 class QuotesTableViewModelImpl(val tableContainerElement: HTMLElement) : QuotesTableViewModel {
-    private val tbodyElement = tableContainerElement.getElementsByTagName("tbody").first!!
+    private val tbodyElement = tableContainerElement.getElementsByTagName("tbody").asList().first()
     private val placeholder = document.create.tr {
         classes = setOf("warning")
         td {
@@ -117,17 +117,6 @@ private fun TagConsumer<HTMLElement>.createQuoteRow(): HTMLTableRowElement =
             }
         }
 
-fun HTMLTableRowElement.modify(value: Double, move: QuoteMove) {
-    classes = rowClassFor(move)
-    getElementsByClassName("move-i").forEachElement {
-        it.classes = "move-i glyphicon " + iconClassFor(move)
-    }
-    getElementsByClassName("value-span").forEachElement {
-        it.textContent = value.toString()
-        (it.parentNode as HTMLElement).classes = textClassFor(move)
-    }
-}
-
 private fun textClassFor(move: QuoteMove): String {
     return when (move) {
         QuoteMove.UP -> "text-success"
@@ -152,4 +141,3 @@ private fun rowClassFor(move: QuoteMove): String {
     }
 }
 
-fun Node.removeFromParent() : Unit { parentNode?.removeChild(this) }

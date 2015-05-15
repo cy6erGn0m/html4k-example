@@ -3,12 +3,13 @@ package market.web.impl
 import html4k.minus
 import org.w3c.dom.Node
 import java.util.*
-import kotlin.js.dom.html.HTMLElement
-import kotlin.js.dom.html.HTMLInputElement
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLInputElement
+import kotlin.dom.hasClass
 import kotlin.properties.ReadWriteProperty
 
 class NodeTextContentDelegate(val node : Node) : ReadWriteProperty<Any, String> {
-    override fun get(thisRef: Any, desc: PropertyMetadata): String = node.textContent
+    override fun get(thisRef: Any, desc: PropertyMetadata): String = node.textContent ?: ""
 
     override fun set(thisRef: Any, desc: PropertyMetadata, value: String) {
         node.textContent = value
@@ -25,7 +26,7 @@ class InputFieldDelegate(val field : HTMLInputElement) : ReadWriteProperty<Any, 
 
 class InputValidDelegate(val field : HTMLInputElement, val invalidClassName : String = "alert-danger") : ReadWriteProperty<Any, Boolean> {
     override fun get(thisRef: Any, desc: PropertyMetadata): Boolean =
-        invalidClassName in field.classesSet
+        field.hasClass(invalidClassName)
 
     override fun set(thisRef: Any, desc: PropertyMetadata, value: Boolean) {
         field.classIf(invalidClassName, !value)
@@ -33,12 +34,10 @@ class InputValidDelegate(val field : HTMLInputElement, val invalidClassName : St
 }
 
 fun HTMLElement.classIf(className : String, condition : Boolean) {
-    val classes = LinkedHashSet(classesSet.toHashSet())
-
-    val changed = if (condition) classes.add(className) else classes.remove(className)
-
-    if (changed) {
-        this.className = classes.join(" ")
+    if (condition) {
+        classList.add(className)
+    } else {
+        classList.remove(className)
     }
 }
 
@@ -49,6 +48,3 @@ fun HTMLElement.attributeIf(attributeName : String, attributeValue : String, con
         removeAttribute(attributeName)
     }
 }
-
-val HTMLElement.classesSet : Set<String>
-    get() = LinkedHashSet(this.className.split("\\s+").filterNot {it.isEmpty()})
