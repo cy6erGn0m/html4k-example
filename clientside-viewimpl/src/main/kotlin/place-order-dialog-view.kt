@@ -79,10 +79,18 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
                                 radioButton(RadioButtonType.radioButton) {
                                     classes += "buyRadioButton"
                                     +"Buy"
+
+                                    onClickFunction = {
+                                        presenter.onBuyButtonClicked()
+                                    }
                                 }
                                 radioButton(RadioButtonType.radioButton) {
                                     classes += "sellRadioButton"
                                     +"Sell"
+
+                                    onClickFunction = {
+                                        presenter.onSellButtonClicked()
+                                    }
                                 }
                             }
                         }
@@ -111,10 +119,18 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
 
                     buttonDefault {
                         +"Cancel"
+
+                        onClickFunction = {
+                            presenter.onCancelled()
+                        }
                     }
 
                     buttonPrimary {
                         +"Save"
+
+                        onClickFunction = {
+                            presenter.onAccepted()
+                        }
                     }
                 }
             }
@@ -132,9 +148,6 @@ class PlaceOrderDialogViewImpl : PlaceOrderDialogView {
         priceText.onkeyup = { defer { presenter.doValidate() } }
         quantityText.onkeydown = { defer { presenter.doValidate() } }
         quantityText.onkeyup = { defer { presenter.doValidate() } }
-
-        buyRadioButton.onclick = { presenter.onBuyButtonClicked() }
-        sellRadioButton.onclick = { presenter.onSellButtonClicked() }
 
         jq(priceText).change { defer { presenter.doValidate() } }
         jq(quantityText).change { defer { presenter.doValidate() } }
