@@ -25,7 +25,7 @@ fun onReady() {
             )
     ) {
         nav {
-            classes = "navbar navbar-default navbar-static-top".split(" ").toSet()
+            classes = setOf("navbar", "navbar-default", "navbar-static-top")
             container {
                 navbarHeader {
                     button {

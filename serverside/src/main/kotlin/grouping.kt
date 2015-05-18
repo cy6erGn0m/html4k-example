@@ -23,9 +23,9 @@ fun <Q> GroupInfo<*, in Q>.put(event: Q) {
 class GroupingHandler<T, Q> (val workers : Int = Runtime.getRuntime().availableProcessors(), val groupFunction : (Q) -> T, val handler : (Q) -> Unit) {
     private val lock = ReentrantLock()
     private val routeTable = ConcurrentHashMap<T, GroupInfo<T, Q>>()
-    private val workerGroups = ConcurrentHashMap(workers.indices.map {it to HashSet<T>()}.toMap())
-    private val groupQueues = workers.indices.map { LinkedBlockingQueue<Q>() }
-    private val threads = workers.indices.map { id -> thread { Executor(groupQueues[id]).run() } }
+    private val workerGroups = ConcurrentHashMap((0 .. workers - 1).map {it to HashSet<T>()}.toMap())
+    private val groupQueues = (0 .. workers - 1).map { LinkedBlockingQueue<Q>() }
+    private val threads = (0 .. workers - 1).map { id -> thread { Executor(groupQueues[id]).run() } }
 
     fun put(event : Q) {
         val group = groupFunction(event)

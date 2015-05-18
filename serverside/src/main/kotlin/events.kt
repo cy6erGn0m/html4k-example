@@ -4,7 +4,7 @@ import market.model.*
 import market.model.server.*
 import java.util.concurrent.ConcurrentHashMap
 
-trait ItemEvent<out T> {
+interface ItemEvent<out T> {
     val item: T
 }
 class ItemPlaced<T>(override val item: T) : ItemEvent<T>
@@ -12,7 +12,7 @@ class ItemChanged<T>(override val item: T) : ItemEvent<T>
 class ItemCancelled<T>(override val item: T) : ItemEvent<T>
 class ItemCompleted<T>(override val item: T) : ItemEvent<T>
 
-trait ItemEventListener<in T> {
+interface ItemEventListener<in T> {
     fun onEvent(event : ItemEvent<T>)
 }
 

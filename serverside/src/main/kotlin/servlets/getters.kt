@@ -16,7 +16,7 @@ import kotlin.concurrent.withLock
 
 val m = Market()
 
-WebServlet(urlPatterns = array("/blotter"), name = "BlotterServlet", loadOnStartup = 1)
+WebServlet(urlPatterns = arrayOf("/blotter"), name = "BlotterServlet", loadOnStartup = 1)
 class ListOrdersServlet : HttpServlet() {
 
     private val lock = ReentrantLock()

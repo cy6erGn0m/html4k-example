@@ -85,7 +85,7 @@ class RadioDIV(val name : String, consumer : TagConsumer<*>) : DIV(mapOf("class"
 fun FlowContent.radioGroup(name : String, block : RadioDIV.() -> Unit) = RadioDIV(name, consumer).visit(block)
 
 enum class RadioButtonType {
-    checkbox
+    checkbox,
     radioButton
 }
 fun RadioDIV.radioButton(type : RadioButtonType = RadioButtonType.checkbox, block : LABEL.() -> Unit) = label {

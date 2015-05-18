@@ -117,16 +117,16 @@ fun String.toDouble0() = if (this.matches("^-?[0-9]+(\\.[0-9]+)?$")) parseDouble
 private fun parseDouble(s : String) : Double {
     var result = 0.0
     val sign = if (s.first() == '-') -1.0 else 1.0
-    val parts = s.split("\\.").map { if (it.startsWith("-")) it.substring(1) else it }
+    val parts = s.split(".").map { if (it.startsWith("-")) it.substring(1) else it }
 
     parts[0].forEach {
-        result = result * 10.0 + (it.toInt() - 0x30)
+        result *= 10.0 + (it.toInt() - 0x30)
     }
 
     if (parts.size() > 1) {
         var div = 0.1
         parts[1].forEach { ch ->
-            result = result + (ch.toInt() - 0x30) * div
+            result += (ch.toInt() - 0x30) * div
             div *= 0.1
         }
     }

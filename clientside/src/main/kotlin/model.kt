@@ -2,20 +2,20 @@ package market.web
 
 import market.model.OrderDirection
 
-trait QuotesListener {
+interface QuotesListener {
     fun onQuote(instrument : String, value : Double)
 }
 
 enum class QuoteMove {
-    UP
-    DOWN
+    UP,
+    DOWN,
     NEUTRAL
 }
 
 enum class OrderState {
-    ACTIVE
-    COMPLETED
-    CANCELLED
+    ACTIVE,
+    COMPLETED,
+    CANCELLED,
     UNKNOWN
 }
 

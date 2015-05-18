@@ -10,7 +10,7 @@ data class OrderTrade(
 ) : HasInstrument
 
 
-trait Order : HasInstrument, HasDirection {
+interface Order : HasInstrument, HasDirection {
     val price: BigDecimal
     val quantity: Int
     val orderSign: Long

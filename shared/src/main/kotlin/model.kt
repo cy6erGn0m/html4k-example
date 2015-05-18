@@ -2,7 +2,7 @@ package market.model
 
 
 enum class OrderDirection {
-    BUY SELL
+    BUY, SELL
 }
 
 val OrderDirection.opposite: OrderDirection
@@ -17,16 +17,16 @@ val OrderDirection.comparisonSign: Int
         OrderDirection.SELL -> -1
     }
 
-trait HasInstrument {
+interface HasInstrument {
     val instrument: String
 
 }
 
-trait HasDirection {
+interface HasDirection {
     val direction: OrderDirection
 }
 
 
-trait InputCommand
+interface InputCommand
 data object UnknownCommand : InputCommand
 data class OrderPlaceCommand(val instrument : String, val price : String, val quantity : Int, val direction : String, val type : String = "placeOrder") : InputCommand

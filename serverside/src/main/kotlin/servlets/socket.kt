@@ -15,7 +15,7 @@ import javax.websocket.server.ServerEndpoint
 
 class RawInputCommand(val type: String?, val instrument: String?, val price: String?, val quantity: Int?, val direction: String?)
 
-trait Event
+interface Event
 data class Hello(val message: String, val type: String = "hello") : Event
 data class OrderState(val id: String, val instrument: String, val price: String, val quantity: Int, val direction: String, val state : String, val type: String = "order") : Event
 
