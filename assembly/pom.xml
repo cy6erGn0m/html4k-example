@@ -25,11 +25,6 @@
         </dependency>
         <dependency>
             <groupId>cg.test</groupId>
-            <artifactId>clientside-viewimpl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>cg.test</groupId>
             <artifactId>shared</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -69,12 +64,6 @@
                         <overlay>
                             <groupId>cg.test</groupId>
                             <artifactId>clientside</artifactId>
-                            <type>jar</type>
-                            <targetPath>js/</targetPath>
-                        </overlay>
-                        <overlay>
-                            <groupId>cg.test</groupId>
-                            <artifactId>clientside-viewimpl</artifactId>
                             <type>jar</type>
                             <targetPath>js/</targetPath>
                         </overlay>

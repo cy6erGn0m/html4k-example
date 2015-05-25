@@ -18,6 +18,11 @@
             <version>${kotlin.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlinx.html.js</artifactId>
+            <version>${html4k.version}</version>
+        </dependency>
+        <dependency>
             <groupId>cg.test</groupId>
             <artifactId>shared</artifactId>
             <version>${project.version}</version>
@@ -46,7 +51,7 @@
                         </goals>
                         <configuration>
                             <outputFile>${project.build.outputDirectory}/${project.artifactId}.js</outputFile>
-                            <metaFile>${project.build.outputDirectory}/${project.artifactId}.meta.js</metaFile>
+                            <metaInfo>true</metaInfo>
                         </configuration>
                     </execution>
                     <execution>
@@ -57,7 +62,7 @@
                         </goals>
                         <configuration>
                             <outputFile>${project.basedir}/target/jsjs/${project.artifactId}.js</outputFile>
-                            <metaFile>${project.basedir}/target/jsjs/${project.artifactId}.meta.js</metaFile>
+                            <metaInfo>true</metaInfo>
                         </configuration>
                     </execution>
                     <execution>
@@ -68,7 +73,7 @@
                         </goals>
                         <configuration>
                             <outputFile>${project.basedir}/target/jsjs/${project.artifactId}-tests.js</outputFile>
-                            <metaFile>${project.basedir}/target/jsjs/${project.artifactId}-tests.meta.js</metaFile>
+                            <metaInfo>true</metaInfo>
                         </configuration>
                     </execution>
                 </executions>
