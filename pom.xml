@@ -18,7 +18,7 @@
 
     <properties>
         <kotlin.version>0.1-SNAPSHOT</kotlin.version>
-        <html4k.version>0.3.3</html4k.version>
+        <html4k.version>[0.3.2,0.4.0)</html4k.version>
     </properties>
 
     <build>
@@ -37,6 +37,14 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>bintray-cy6ergn0m-maven</id>
+            <name>bintray</name>
+            <url>http://dl.bintray.com/cy6ergn0m/maven</url>
         </repository>
     </repositories>
 
