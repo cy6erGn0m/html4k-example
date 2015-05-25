@@ -32,7 +32,7 @@ class InstrumentBlotterViewRowImpl(val parent : InstrumentBlotterViewImpl) : Ins
         }
 
     override var quantity: Int
-        get() = quantityCell.textContent!!.let { t -> if (t.matches("[0-9]+")) parseInt(t) else 0 }
+        get() = quantityCell.textContent!!.let { t -> if (t.matches("[0-9]+".toRegex())) parseInt(t) else 0 }
         set(value) {
             quantityCell.textContent = value.toString()
         }

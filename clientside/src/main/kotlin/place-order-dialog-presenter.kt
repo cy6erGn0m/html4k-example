@@ -54,7 +54,7 @@ class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, val socketServi
         var valid = true
 
         val price = view.price
-        if (!price.matches("^[0-9]+(\\.[0-9]+)?$")) {
+        if (!price.matches("^[0-9]+(\\.[0-9]+)?$".toRegex())) {
             valid = false
             view.priceValid = false
 
@@ -69,7 +69,7 @@ class PlaceOrderDialogPresenter(val view : PlaceOrderDialogView, val socketServi
         }
 
         val quantity = view.quantity
-        if (!quantity.matches("^[0-9]+$") || quantity.toDouble0() == 0.0) {
+        if (!quantity.matches("^[0-9]+$".toRegex()) || quantity.toDouble0() == 0.0) {
             valid = false
             view.quantityValid = false
 

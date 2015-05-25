@@ -113,14 +113,14 @@ class OrderCollector {
     private fun Collection<Order>.sum() = sumByDouble { it.quantity * it.price.toDouble0() }
 }
 
-fun String.toDouble0() = if (this.matches("^-?[0-9]+(\\.[0-9]+)?$")) parseDouble(this) else throw IllegalArgumentException()
+fun String.toDouble0() = if (this.matches("^-?[0-9]+(\\.[0-9]+)?$".toRegex())) parseDouble(this) else throw IllegalArgumentException()
 private fun parseDouble(s : String) : Double {
     var result = 0.0
     val sign = if (s.first() == '-') -1.0 else 1.0
-    val parts = s.split(".").map { if (it.startsWith("-")) it.substring(1) else it }
+    val parts = s.splitBy(".").map { if (it.startsWith("-")) it.substring(1) else it }
 
     parts[0].forEach {
-        result *= 10.0 + (it.toInt() - 0x30)
+        result = result * 10.0 + (it.toInt() - 0x30)
     }
 
     if (parts.size() > 1) {
