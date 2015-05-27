@@ -88,6 +88,9 @@
                         </goals>
                         <phase>test-compile</phase>
                         <configuration>
+                            <includeScope>test</includeScope>
+                            <excludeArtifactIds>shared</excludeArtifactIds>
+                            <includeTypes>jar</includeTypes>
                             <outputDirectory>${project.basedir}/target/jsjs</outputDirectory>
                             <includes>*.js</includes>
                             <excludes>*.meta.js</excludes>

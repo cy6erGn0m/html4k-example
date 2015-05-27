@@ -18,6 +18,7 @@ module.exports = function (config) {
             frameworks: ['qunit'],
             files: [
                 '../../../target/jsjs/kotlin.js',
+                '../../../../shared/target/classes/*.js',
                 '../../../target/jsjs/*.js'
             ],
             exclude: [],

@@ -26,3 +26,7 @@ dependency-reduced-pom.xml
 ### IDEA
 *iml
 .idea
+
+**/karma/node_modules
+**/karma/node
+**/karma/etc
