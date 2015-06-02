@@ -28,8 +28,7 @@ fun <T> TagConsumer<T>.mainPageContent() {
             }
             navbarCollapse {
                 navbarNav {
-                    li {
-                        active
+                    li("active") {
                         a("#") { +"Home" }
                     }
                     li { a("#about") { +"About" } }
@@ -50,7 +49,7 @@ fun <T> TagConsumer<T>.mainPageContent() {
                 }
                 navbarRight {
                     li { a("http://getbootstrap.com/examples/navbar/") {+"Original bootstrap page"} }
-                    li { active; a("http://getbootstrap.com/examples/navbar/") {+"Original bootstrap page"} }
+                    li("active") { a("http://getbootstrap.com/examples/navbar/") {+"Original bootstrap page"} }
                     li { a("http://getbootstrap.com/examples/navbar/") {+"Original bootstrap page"} }
                 }
             } // navbar-collapse
