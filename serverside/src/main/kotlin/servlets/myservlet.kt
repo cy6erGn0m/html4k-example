@@ -1,4 +1,4 @@
-package cg.test
+package market.servlets
 
 import html4k.stream.appendHTML
 import market.server.mainpage.mainPageTemplate
