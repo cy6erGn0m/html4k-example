@@ -76,6 +76,7 @@ interface PlaceOrderDialogView {
 interface WebSocketService {
     val socket: KWebSocket
     val orderListeners: MutableList<(Order) -> Unit>
+    val quoteListeners: MutableList<(Quote) -> Unit>
 
     fun start() {
         socket.send(UnknownCommand)

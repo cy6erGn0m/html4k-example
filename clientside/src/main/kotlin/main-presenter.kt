@@ -2,7 +2,7 @@ package market.web
 
 import kotlin.properties.Delegates
 
-class MainPresenter(val view : MainView, val webSocketService : WebSocketService) : QuotesListener {
+class MainPresenter(val view : MainView, val webSocketService : WebSocketService) {
     private val tableView by Delegates.lazy { view.createQuotesTable() }
     private val instrumentView by Delegates.lazy { view.createInstrumentView() }
 
@@ -13,10 +13,16 @@ class MainPresenter(val view : MainView, val webSocketService : WebSocketService
         tableView.start()
         instrumentPresenter.currentInstrument = "INSTR-1"
         instrumentPresenter.start()
+        webSocketService.quoteListeners.add {
+            if (it.instrument.matches(".*\\-[0-9]$".toRegex())) {
+                onQuote(it.instrument, parseDouble(it.value))
+            }
+        }
+
         webSocketService.start()
     }
 
-    override fun onQuote(instrument: String, value: Double) {
+    private fun onQuote(instrument: String, value: Double) {
         tablePresenter.onQuote(instrument, value)
     }
 }

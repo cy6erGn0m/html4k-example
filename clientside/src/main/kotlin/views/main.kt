@@ -35,8 +35,6 @@ fun onReady() {
         KWebSocketImpl("ws://localhost:8080/ws", listener)
     })
     presenter.start()
-
-    startTicker(presenter, 1000)
 }
 
 fun main(args: Array<String>) {

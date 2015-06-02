@@ -22,3 +22,5 @@ enum class OrderState {
 data class Order(val orderId : String, val instrument : String, val price : String, val quantity : Int, val direction: OrderDirection, state : OrderState) {
     val state : OrderState = state
 }
+
+data class Quote(val instrument: String, val value: String)
