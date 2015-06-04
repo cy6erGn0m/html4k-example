@@ -1,14 +1,12 @@
 package market.web.impl
 
-import market.web.*
-import market.web.impl
+import market.web.KWebSocket
 import org.w3c.dom.MessageEvent
 import org.w3c.dom.WebSocket
-import java.util.*
+import java.util.ArrayList
 import kotlin.browser.window
-import kotlin.reflect.KMemberProperty
 
-class KWebSocketImpl(val url : String, val listener : (dynamic) -> Unit) : KWebSocket {
+class KWebSocketImpl(val url : String, val reconnectDelayMillis: Int, val listener : (dynamic) -> Unit) : KWebSocket {
     private var currentSocket : WebSocket? = null
     private val queue = ArrayList<String>()
     private var closed = false
@@ -57,19 +55,27 @@ class KWebSocketImpl(val url : String, val listener : (dynamic) -> Unit) : KWebS
         listener(message)
     }
 
-    private fun reconnectWithDelay(delay : Int) {
+    private fun reconnectWithDelay() {
         window.setTimeout({
             connect()
-        }, delay)
+        }, reconnectDelayMillis)
     }
 
     private fun connect() {
         try {
             tryConnect()
         } catch (any : Throwable) {
-            console.error("Failed to connect websocket to ${url} due to ", any.getMessage(), " will reconnect in 5s")
-            reconnectWithDelay(3000)
+            reconnectWithMessageAndDelay()
         }
+    }
+
+    private fun reconnectWithMessageAndDelay() {
+        val secondsText = "^[0-9]+([,.][0-9]{1,2})?".toRegex()
+                .match((reconnectDelayMillis / 1000.0).toString())!!
+                .value.replace(".[0-9]+$".toRegex()) { it.value.replace("\\.?0+$".toRegex(), "") }
+
+        console.error("WebSocket ($url) connection failure, will reconnect in ${secondsText}s")
+        reconnectWithDelay()
     }
 
     private fun tryConnect() {
@@ -96,9 +102,7 @@ class KWebSocketImpl(val url : String, val listener : (dynamic) -> Unit) : KWebS
 
         socket.onerror = {
             closeSocket()
-            console.error("websocket ($url) connection failure, will reconnect in 5s")
-
-            reconnectWithDelay(5000)
+            reconnectWithMessageAndDelay()
         }
 
         socket.onmessage = {
