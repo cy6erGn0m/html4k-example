@@ -30,3 +30,4 @@ dependency-reduced-pom.xml
 **/karma/node_modules
 **/karma/node
 **/karma/etc
+**/.dlcache

@@ -32,7 +32,7 @@ fun onReady() {
     }
 
     val presenter = MainPresenter(mainView, WebSocketServiceImpl { listener ->
-        KWebSocketImpl("ws://localhost:8080/ws", listener)
+        KWebSocketImpl("ws://${window.location.host}/${window.location.pathname.removePrefix("/").removeSuffix("/")}/ws", 3000, listener)
     })
     presenter.start()
 }
