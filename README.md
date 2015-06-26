@@ -1,5 +1,7 @@
 This is example Kotlin Web project that 
-demonstrates [html4k](https://github.com/cy6erGn0m/html4k) and [RxKotlin](https://github.com/ReactiveX/RxKotlin)
+demonstrates [html4k](https://github.com/cy6erGn0m/html4k) and [RxKotlin](https://github.com/ReactiveX/RxKotlin). 
+
+tags: Kotlin, Web, html4k, Kotlin programming
 
 # Requirements
  - Java 8
